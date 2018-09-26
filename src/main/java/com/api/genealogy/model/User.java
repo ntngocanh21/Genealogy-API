@@ -14,11 +14,13 @@ public class User {
     private Date birthday;
     private Date createdDate;
     private Date lastUpdated;
+    private String role;
+
 
     public User() {
     }
 
-    public User(Integer id, String username, String password, String mail, String fullname, Boolean gender, String address, String avatar, Date birthday, Date createdDate, Date lastUpdated) {
+    public User(Integer id, String username, String password, String mail, String fullname, Boolean gender, String address, String avatar, Date birthday, Date createdDate, Date lastUpdated, String role) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -30,6 +32,15 @@ public class User {
         this.birthday = birthday;
         this.createdDate = createdDate;
         this.lastUpdated = lastUpdated;
+        this.role = role;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public Integer getId() {

@@ -6,6 +6,7 @@ import com.api.genealogy.model.LoginResponse;
 import com.api.genealogy.model.MessageResponse;
 import com.api.genealogy.model.User;
 import com.api.genealogy.repository.UserRepository;
+import com.api.genealogy.security.JwtGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private JwtGenerator jwtGenerator;
 
     @Override
     public LoginResponse login(User user) {
@@ -28,8 +32,7 @@ public class UserServiceImpl implements UserService {
         } else {
             messageResponse.setCode(HTTPCodeResponse.SUCCESS);
             messageResponse.setDescription("Success");
-            //return token
-            return new LoginResponse(messageResponse, null);
+            return new LoginResponse(messageResponse, jwtGenerator.generate(userEntity));
         }
     }
 
@@ -42,6 +45,7 @@ public class UserServiceImpl implements UserService {
             userRegister.setFullname(user.getFullname());
             userRegister.setUsername(user.getUsername());
             userRegister.setPassword(user.getPassword());
+            userRegister.setRole("ROLE_MEMBER");
             userRegister.setCreatedDate(new Date());
             userRegister.setLastUpdated(new Date());
             userRepository.save(userRegister);

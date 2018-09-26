@@ -21,6 +21,10 @@ public class UserEntity {
     private String password;
 
     @Basic
+    @Column(name = "role")
+    private String role;
+
+    @Basic
     @Column(name = "mail")
     private String mail;
 
@@ -138,6 +142,14 @@ public class UserEntity {
 
     public void setLastUpdated(Date lastUpdated) {
         this.lastUpdated = lastUpdated;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
 
