@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public MessageResponse register(User user) {
+    public LoginResponse register(User user) {
         UserEntity userEntity = userRepository.findUserEntityByUsername(user.getUsername());
         MessageResponse messageResponse = new MessageResponse();
         if (userEntity == null) {
@@ -59,12 +59,12 @@ public class UserServiceImpl implements UserService {
             userRepository.save(userRegister);
             messageResponse.setCode(HTTPCodeResponse.SUCCESS);
             messageResponse.setDescription("You have been successfully registered");
-            return messageResponse;
+            return new LoginResponse(messageResponse, jwtGenerator.generate(userRepository.findUserEntityByUsername(user.getUsername())));
         }
         else{
             messageResponse.setCode(HTTPCodeResponse.OBJECT_EXISTED);
             messageResponse.setDescription("Username existed!!");
-            return messageResponse;
+            return new LoginResponse(messageResponse, null);
         }
     }
 }
