@@ -7,6 +7,7 @@ import com.api.genealogy.model.MessageResponse;
 import com.api.genealogy.model.User;
 import com.api.genealogy.repository.UserRepository;
 import com.api.genealogy.security.JwtGenerator;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,15 +25,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public LoginResponse login(User user) {
         MessageResponse messageResponse = new MessageResponse();
-        UserEntity userEntity = userRepository.findUserEntityByUsernameAndPassword(user.getUsername(), user.getPassword());
+        UserEntity userEntity = userRepository.findUserEntityByUsername(user.getUsername());
         if (userEntity == null) {
             messageResponse.setCode(HTTPCodeResponse.OBJECT_NOT_FOUND);
             messageResponse.setDescription("Wrong Information");
             return new LoginResponse(messageResponse, null);
         } else {
-            messageResponse.setCode(HTTPCodeResponse.SUCCESS);
-            messageResponse.setDescription("Success");
-            return new LoginResponse(messageResponse, jwtGenerator.generate(userEntity));
+            if (BCrypt.checkpw(user.getPassword(), userEntity.getPassword())) {
+                messageResponse.setCode(HTTPCodeResponse.SUCCESS);
+                messageResponse.setDescription("Success");
+                return new LoginResponse(messageResponse, jwtGenerator.generate(userEntity));
+            }
+            else{
+                messageResponse.setCode(HTTPCodeResponse.OBJECT_NOT_FOUND);
+                messageResponse.setDescription("Wrong Information");
+                return new LoginResponse(messageResponse, null);
+            }
         }
     }
 
