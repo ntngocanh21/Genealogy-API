@@ -8,6 +8,11 @@ public class MessageResponse {
     public MessageResponse() {
     }
 
+    public MessageResponse(int code, String description) {
+        this.code = code;
+        this.description = description;
+    }
+
     public int getCode() {
         return code;
     }

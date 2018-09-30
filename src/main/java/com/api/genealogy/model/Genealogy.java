@@ -1,36 +1,20 @@
-package com.api.genealogy.entity;
+package com.api.genealogy.model;
 
-import javax.persistence.*;
+import com.api.genealogy.entity.UserEntity;
+
 import java.util.Date;
-import java.util.List;
 
-@Entity
-@Table(name = "genealogy")
-public class GenealogyEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+public class Genealogy {
+
     private Integer id;
-
-    @Basic
-    @Column(name = "name")
     private String name;
-
-    @Basic
-    @Column(name = "history")
     private String history;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = true)
     public UserEntity userEntity;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "createdDate", columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP", updatable = false)
     private Date createdDate;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "lastUpdated", columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private Date lastUpdated;
+
+    public Genealogy() {
+    }
 
     public Integer getId() {
         return id;
@@ -80,4 +64,3 @@ public class GenealogyEntity {
         this.lastUpdated = lastUpdated;
     }
 }
-

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtValidator {
 	
-	private String secret = "youtube";
+	private String secret = "genealogy";
 
     public UserEntity validate(String token) {
         UserEntity userEntity = null;

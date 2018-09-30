@@ -56,6 +56,9 @@ public class UserEntity {
     @Column(name = "lastUpdated", columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private Date lastUpdated;
 
+    @OneToMany(mappedBy = "userEntity")
+    private List<GenealogyEntity> genealogyEntities;
+
     public Integer getId() {
         return id;
     }
@@ -150,6 +153,14 @@ public class UserEntity {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public List<GenealogyEntity> getGenealogyEntities() {
+        return genealogyEntities;
+    }
+
+    public void setGenealogyEntities(List<GenealogyEntity> genealogyEntities) {
+        this.genealogyEntities = genealogyEntities;
     }
 }
 

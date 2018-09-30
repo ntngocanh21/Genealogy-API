@@ -63,10 +63,7 @@ public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.csrf().disable().authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/register").permitAll()
-                .anyRequest().authenticated() // Các request còn lại đều cần được authenticated
+                .antMatchers("**/api/**").authenticated() // Các request còn lại đều cần được authenticated
                 .and()
                 .exceptionHandling().authenticationEntryPoint(entryPoint)
                 .and()
