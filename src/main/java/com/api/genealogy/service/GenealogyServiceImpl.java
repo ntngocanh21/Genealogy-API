@@ -6,11 +6,13 @@ import com.api.genealogy.entity.UserEntity;
 import com.api.genealogy.model.*;
 import com.api.genealogy.repository.GenealogyRepository;
 import com.api.genealogy.repository.UserRepository;
+import com.api.genealogy.service.response.CodeResponse;
+import com.api.genealogy.service.response.GenealogyResponse;
+import com.api.genealogy.service.response.MessageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -52,20 +54,20 @@ public class GenealogyServiceImpl implements GenealogyService  {
     }
 
     @Override
-    public CreateResponse createGenealogy(String username, Genealogy genealogy) {
-        CreateResponse createResponse = new CreateResponse();
+    public GenealogyResponse createGenealogy(String username, Genealogy genealogy) {
+        GenealogyResponse genealogyResponse = new GenealogyResponse();
         UserEntity userEntity = userRepository.findUserEntityByUsername(username);
         GenealogyEntity genealogyEntity = new GenealogyEntity();
         genealogyEntity.setName(genealogy.getName());
         genealogyEntity.setHistory(genealogy.getHistory());
-        genealogyEntity.setCreatedDate(new Date());
-        genealogyEntity.setLastUpdated(new Date());
         genealogyEntity.setUserEntity(userEntity);
 
         GenealogyEntity newGenealogy = genealogyRepository.save(genealogyEntity);
-        createResponse.setError(new MessageResponse(HTTPCodeResponse.SUCCESS,"Success"));
-        createResponse.setId( newGenealogy.getId());
-        return createResponse;
+        ArrayList<Genealogy> genealogies = new ArrayList<>();
+        genealogies.add(parseGenealogyEntityToGenealogy(newGenealogy));
+        genealogyResponse.setError(new MessageResponse(HTTPCodeResponse.SUCCESS,"Success"));
+        genealogyResponse.setGenealogyList(genealogies);
+        return genealogyResponse;
     }
 
     @Override
@@ -77,7 +79,7 @@ public class GenealogyServiceImpl implements GenealogyService  {
             if(genealogyEntity.getUserEntity().getId() == userEntity.getId()){
                 genealogyEntity.setName(genealogy.getName());
                 genealogyEntity.setHistory(genealogy.getHistory());
-                genealogyEntity.setLastUpdated(new Date());
+                genealogyRepository.save(genealogyEntity);
                 codeResponse.setError(new MessageResponse(HTTPCodeResponse.SUCCESS,"Success"));
             }
             else {
@@ -100,7 +102,7 @@ public class GenealogyServiceImpl implements GenealogyService  {
         }
         else {
             if(genealogyEntity.getUserEntity().getId() == userEntity.getId()){
-                genealogyRepository.deleteById(genealogyEntity.getId());
+                genealogyRepository.deleteById(genealogyId);
                 codeResponse.setError(new MessageResponse(HTTPCodeResponse.SUCCESS,"Success"));
             }
             else {
@@ -115,9 +117,6 @@ public class GenealogyServiceImpl implements GenealogyService  {
         genealogy.setId(genealogyEntity.getId());
         genealogy.setHistory(genealogyEntity.getHistory());
         genealogy.setName(genealogyEntity.getName());
-        genealogy.setCreatedDate(genealogyEntity.getCreatedDate());
-        genealogy.setLastUpdated(genealogyEntity.getLastUpdated());
-        genealogy.setUserEntity(genealogyEntity.getUserEntity());
         return genealogy;
     }
 

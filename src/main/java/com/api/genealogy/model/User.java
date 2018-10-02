@@ -12,8 +12,6 @@ public class User {
     private String address;
     private String avatar;
     private Date birthday;
-    private Date createdDate;
-    private Date lastUpdated;
     private String role;
 
 
@@ -30,8 +28,6 @@ public class User {
         this.address = address;
         this.avatar = avatar;
         this.birthday = birthday;
-        this.createdDate = createdDate;
-        this.lastUpdated = lastUpdated;
         this.role = role;
     }
 
@@ -115,19 +111,4 @@ public class User {
         this.birthday = birthday;
     }
 
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Date getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(Date lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
 }

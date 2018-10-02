@@ -48,15 +48,7 @@ public class UserEntity {
     @Column(name = "birthday")
     private Date birthday;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "createdDate", columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP", updatable = false)
-    private Date createdDate;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "lastUpdated", columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    private Date lastUpdated;
-
-    @OneToMany(mappedBy = "userEntity")
+    @OneToMany(mappedBy = "userEntity", cascade=CascadeType.ALL)
     private List<GenealogyEntity> genealogyEntities;
 
     public Integer getId() {
@@ -129,22 +121,6 @@ public class UserEntity {
 
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
-    }
-
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Date getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(Date lastUpdated) {
-        this.lastUpdated = lastUpdated;
     }
 
     public String getRole() {

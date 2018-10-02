@@ -38,7 +38,6 @@ public class GenealogyController {
         return new ResponseEntity<>(genealogyService.deleteGenealogy(currentUserName,genealogyId), HttpStatus.OK);
     }
 
-
     //test config url
     @GetMapping("/genealogy")
     public String hello() {

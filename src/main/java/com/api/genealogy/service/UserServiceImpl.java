@@ -2,16 +2,14 @@ package com.api.genealogy.service;
 
 import com.api.genealogy.constant.HTTPCodeResponse;
 import com.api.genealogy.entity.UserEntity;
-import com.api.genealogy.model.LoginResponse;
-import com.api.genealogy.model.MessageResponse;
 import com.api.genealogy.model.User;
 import com.api.genealogy.repository.UserRepository;
 import com.api.genealogy.security.JwtGenerator;
+import com.api.genealogy.service.response.LoginResponse;
+import com.api.genealogy.service.response.MessageResponse;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -48,14 +46,15 @@ public class UserServiceImpl implements UserService {
     public LoginResponse register(User user) {
         UserEntity userEntity = userRepository.findUserEntityByUsername(user.getUsername());
         MessageResponse messageResponse = new MessageResponse();
+
         if (userEntity == null) {
             UserEntity userRegister = new UserEntity();
             userRegister.setFullname(user.getFullname());
             userRegister.setUsername(user.getUsername());
             userRegister.setPassword(user.getPassword());
+            //userRegister.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+
             userRegister.setRole("ROLE_MEMBER");
-            userRegister.setCreatedDate(new Date());
-            userRegister.setLastUpdated(new Date());
             userRepository.save(userRegister);
             messageResponse.setCode(HTTPCodeResponse.SUCCESS);
             messageResponse.setDescription("You have been successfully registered");

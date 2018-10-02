@@ -20,7 +20,7 @@ public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessi
     	 * - @RequestMap at class of controller
     	 * - @RequestMap at method of many controllers.
     	 */
-        super("/rest/**");
+        super("/api/**");
     }
 
     @Override

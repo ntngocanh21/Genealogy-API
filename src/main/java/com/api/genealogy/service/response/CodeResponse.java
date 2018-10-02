@@ -1,4 +1,4 @@
-package com.api.genealogy.model;
+package com.api.genealogy.service.response;
 
 public class CodeResponse {
     private MessageResponse error;

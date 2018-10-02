@@ -21,16 +21,8 @@ public class GenealogyEntity {
     private String history;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = true)
+    @JoinColumn(name = "user_id", nullable = false)
     public UserEntity userEntity;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "createdDate", columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP", updatable = false)
-    private Date createdDate;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "lastUpdated", columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    private Date lastUpdated;
 
     public Integer getId() {
         return id;
@@ -64,20 +56,5 @@ public class GenealogyEntity {
         this.userEntity = userEntity;
     }
 
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Date getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(Date lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
 }
 

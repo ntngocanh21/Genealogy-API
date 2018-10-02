@@ -1,4 +1,6 @@
-package com.api.genealogy.model;
+package com.api.genealogy.service.response;
+
+import com.api.genealogy.model.Genealogy;
 
 import java.util.List;
 
@@ -6,6 +8,9 @@ public class GenealogyResponse {
 
 	private MessageResponse error;
     private List<Genealogy> genealogyList;
+
+    public GenealogyResponse() {
+    }
 
     public GenealogyResponse(MessageResponse error, List<Genealogy> genealogyList) {
         this.error = error;
