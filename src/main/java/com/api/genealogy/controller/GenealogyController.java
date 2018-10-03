@@ -38,9 +38,17 @@ public class GenealogyController {
         return new ResponseEntity<>(genealogyService.deleteGenealogy(currentUserName,genealogyId), HttpStatus.OK);
     }
 
-    //test config url
     @GetMapping("/genealogy")
-    public String hello() {
-        return "helloaa";
+    public ResponseEntity getGenealogies() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserName = authentication.getName();
+        return new ResponseEntity<>(genealogyService.getGenealogies(), HttpStatus.OK);
+    }
+
+    @GetMapping("/genealogy/user")
+    public ResponseEntity getGenealogiesByUserName() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserName = authentication.getName();
+        return new ResponseEntity<>(genealogyService.getGenealogiesByUsername(currentUserName), HttpStatus.OK);
     }
 }
