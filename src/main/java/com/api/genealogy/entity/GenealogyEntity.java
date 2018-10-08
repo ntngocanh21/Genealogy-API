@@ -32,6 +32,9 @@ public class GenealogyEntity {
     @JoinColumn(name = "user_id", nullable = false)
     public UserEntity userEntity;
 
+    @OneToMany(mappedBy = "genealogyEntity", cascade=CascadeType.ALL)
+    private List<BranchEntity> branchEntities;
+
     public Integer getId() {
         return id;
     }
@@ -80,5 +83,12 @@ public class GenealogyEntity {
         this.branch = branch;
     }
 
+    public List<BranchEntity> getBranchEntities() {
+        return branchEntities;
+    }
+
+    public void setBranchEntities(List<BranchEntity> branchEntities) {
+        this.branchEntities = branchEntities;
+    }
 }
 
