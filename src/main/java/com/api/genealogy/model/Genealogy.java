@@ -1,10 +1,15 @@
 package com.api.genealogy.model;
 
+import java.util.Date;
+
 public class Genealogy {
 
     private Integer id;
     private String name;
     private String history;
+    private Date date;
+    private Integer branch;
+    private String owner;
 
     public Genealogy() {
     }
@@ -31,5 +36,29 @@ public class Genealogy {
 
     public void setHistory(String history) {
         this.history = history;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Integer getBranch() {
+        return branch;
+    }
+
+    public void setBranch(Integer branch) {
+        this.branch = branch;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 }

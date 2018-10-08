@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -61,6 +62,8 @@ public class GenealogyServiceImpl implements GenealogyService  {
         genealogyEntity.setName(genealogy.getName());
         genealogyEntity.setHistory(genealogy.getHistory());
         genealogyEntity.setUserEntity(userEntity);
+        genealogyEntity.setDate(new Date());
+        genealogyEntity.setBranch(0);
 
         GenealogyEntity newGenealogy = genealogyRepository.save(genealogyEntity);
         ArrayList<Genealogy> genealogies = new ArrayList<>();
@@ -117,6 +120,9 @@ public class GenealogyServiceImpl implements GenealogyService  {
         genealogy.setId(genealogyEntity.getId());
         genealogy.setHistory(genealogyEntity.getHistory());
         genealogy.setName(genealogyEntity.getName());
+        genealogy.setDate(genealogyEntity.getDate());
+        genealogy.setBranch(genealogyEntity.getBranch());
+        genealogy.setOwner(genealogyEntity.getUserEntity().getFullname());
         return genealogy;
     }
 

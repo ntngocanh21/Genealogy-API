@@ -20,6 +20,14 @@ public class GenealogyEntity {
     @Column(name = "history")
     private String history;
 
+    @Basic
+    @Column(name = "date")
+    private Date date;
+
+    @Basic
+    @Column(name = "branch")
+    private Integer branch;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     public UserEntity userEntity;
@@ -54,6 +62,22 @@ public class GenealogyEntity {
 
     public void setUserEntity(UserEntity userEntity) {
         this.userEntity = userEntity;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Integer getBranch() {
+        return branch;
+    }
+
+    public void setBranch(Integer branch) {
+        this.branch = branch;
     }
 
 }
