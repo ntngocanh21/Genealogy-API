@@ -2,6 +2,7 @@ package com.api.genealogy.entity;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "branch")
@@ -30,6 +31,9 @@ public class BranchEntity {
     @ManyToOne
     @JoinColumn(name = "genealogy_id", nullable = false)
     public GenealogyEntity genealogyEntity;
+
+    @OneToMany(mappedBy = "branchEntity", cascade=CascadeType.ALL)
+    private List<PeopleEntity> peopleEntities;
 
     public Integer getId() {
         return id;

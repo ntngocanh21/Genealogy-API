@@ -34,11 +34,6 @@ public class BranchServiceImpl implements BranchService  {
     public BranchResponse getBranchesByGenealogyId(Integer genealogyId) {
         List<BranchEntity> branchEntities = (List<BranchEntity>) branchRepository
                 .findBranchEntitiesByGenealogyEntity_Id(genealogyId);
-        if (branchEntities.isEmpty()) {
-            MessageResponse messageResponse = new MessageResponse(0,"Success");
-            BranchResponse branchResponse = new BranchResponse(messageResponse, null);
-            return branchResponse;
-        }
         List<Branch> branches = parseListBranchEntityToListBranch(branchEntities);
         MessageResponse messageResponse = new MessageResponse(0,"Success");
         BranchResponse branchResponse = new BranchResponse(messageResponse, branches);
@@ -59,6 +54,8 @@ public class BranchServiceImpl implements BranchService  {
             branchEntity.setMember(0);
 
             BranchEntity newBranch = branchRepository.save(branchEntity);
+            genealogyEntity.setBranch(genealogyEntity.getBranch()+1);
+            genealogyRepository.save(genealogyEntity);
 
             ArrayList<Branch> branches = new ArrayList<>();
             branches.add(parseBranchEntityToBranch(newBranch));
@@ -83,7 +80,10 @@ public class BranchServiceImpl implements BranchService  {
         }
         else {
             if(branchEntity.getGenealogyEntity().getUserEntity().getId() == userEntity.getId()){
-                genealogyRepository.deleteById(branchId);
+                branchRepository.deleteById(branchId);
+                GenealogyEntity genealogyEntity = branchEntity.getGenealogyEntity();
+                genealogyEntity.setBranch(genealogyEntity.getBranch()-1);
+                genealogyRepository.save(genealogyEntity);
                 codeResponse.setError(new MessageResponse(HTTPCodeResponse.SUCCESS,"Success"));
             }
             else {

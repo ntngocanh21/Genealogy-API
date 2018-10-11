@@ -42,7 +42,7 @@ public class GenealogyServiceImpl implements GenealogyService  {
     @Override
     public GenealogyResponse getGenealogiesByUsername(String username) {
         List<GenealogyEntity> genealogyEntities = (List<GenealogyEntity>) genealogyRepository
-                .findGenealogyEntitiesByUserEntity_Username(username);
+                .findGenealogyEntitiesByUserEntity_UsernameOrderByName(username);
         if (genealogyEntities.isEmpty()) {
             MessageResponse messageResponse = new MessageResponse(404,"No genealogy found");
             GenealogyResponse genealogyResponse = new GenealogyResponse(messageResponse, null);

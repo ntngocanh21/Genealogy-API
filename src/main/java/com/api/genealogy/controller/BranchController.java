@@ -38,10 +38,11 @@ public class BranchController {
         return new ResponseEntity<>(branchService.deleteBranch(currentUserName,branchId), HttpStatus.OK);
     }
 
-    @GetMapping("/branch")
-    public ResponseEntity getBranches(@RequestBody int genealogyId) {
+    @PostMapping("/branch/genealogy")
+    public ResponseEntity getBranchesByGenealogyId(@RequestBody int genealogyId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserName = authentication.getName();
         return new ResponseEntity<>(branchService.getBranchesByGenealogyId(genealogyId), HttpStatus.OK);
     }
+
 }
