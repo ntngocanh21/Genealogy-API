@@ -18,10 +18,10 @@ public class BranchController {
     private BranchService branchService;
 
     @PostMapping("/branch")
-    public ResponseEntity createBranch(@RequestBody Branch branch, int genealogyId) {
+    public ResponseEntity createBranch(@RequestBody Branch branch) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserName = authentication.getName();
-        return new ResponseEntity<>(branchService.createBranch(currentUserName, genealogyId, branch), HttpStatus.OK);
+        return new ResponseEntity<>(branchService.createBranch(currentUserName, branch), HttpStatus.OK);
     }
 
     @PutMapping("/branch")

@@ -1,5 +1,6 @@
 package com.api.genealogy.model;
 
+
 import java.util.Date;
 
 public class Branch {
@@ -9,6 +10,7 @@ public class Branch {
     private String description;
     private Date date;
     private Integer member;
+    private Integer genealogyId;
 
     public Branch() {
     }
@@ -53,4 +55,11 @@ public class Branch {
         this.member = member;
     }
 
+    public Integer getGenealogyId() {
+        return genealogyId;
+    }
+
+    public void setGenealogyId(Integer genealogyId) {
+        this.genealogyId = genealogyId;
+    }
 }

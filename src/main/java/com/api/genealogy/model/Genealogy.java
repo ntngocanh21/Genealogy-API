@@ -1,6 +1,7 @@
 package com.api.genealogy.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class Genealogy {
 
@@ -10,6 +11,7 @@ public class Genealogy {
     private Date date;
     private Integer branch;
     private String owner;
+    private List<Branch> branchList;
 
     public Genealogy() {
     }
@@ -60,5 +62,13 @@ public class Genealogy {
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    public List<Branch> getBranchList() {
+        return branchList;
+    }
+
+    public void setBranchList(List<Branch> branchList) {
+        this.branchList = branchList;
     }
 }

@@ -1,9 +1,11 @@
 package com.api.genealogy.service;
 
 import com.api.genealogy.constant.HTTPCodeResponse;
+import com.api.genealogy.entity.BranchEntity;
 import com.api.genealogy.entity.GenealogyEntity;
 import com.api.genealogy.entity.UserEntity;
 import com.api.genealogy.model.*;
+import com.api.genealogy.repository.BranchRepository;
 import com.api.genealogy.repository.GenealogyRepository;
 import com.api.genealogy.repository.UserRepository;
 import com.api.genealogy.service.response.CodeResponse;
@@ -24,6 +26,9 @@ public class GenealogyServiceImpl implements GenealogyService  {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private BranchRepository branchRepository;
 
     @Override
     public GenealogyResponse getGenealogies() {
@@ -49,6 +54,10 @@ public class GenealogyServiceImpl implements GenealogyService  {
             return genealogyResponse;
         }
         List<Genealogy> genealogies = parseListGenealogyEntityToListGenealogy(genealogyEntities);
+        for (Genealogy genealogy : genealogies){
+            List<BranchEntity> branchEntityList = branchRepository.findBranchEntitiesByGenealogyEntity_Id(genealogy.getId());
+            genealogy.setBranchList(BranchServiceImpl.parseListBranchEntityToListBranch(branchEntityList));
+        }
         MessageResponse messageResponse = new MessageResponse(0,"Success");
         GenealogyResponse genealogyResponse = new GenealogyResponse(messageResponse, genealogies);
         return genealogyResponse;
@@ -134,6 +143,5 @@ public class GenealogyServiceImpl implements GenealogyService  {
         }
         return genealogies;
     }
-
 
 }

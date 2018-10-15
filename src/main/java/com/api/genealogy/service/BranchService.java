@@ -7,7 +7,7 @@ import com.api.genealogy.service.response.CodeResponse;
 
 public interface BranchService {
     BranchResponse getBranchesByGenealogyId(Integer genealogyId);
-    BranchResponse createBranch(String username, Integer genealogyId, Branch branch);
+    BranchResponse createBranch(String username, Branch branch);
     CodeResponse deleteBranch(String username, Integer branchId);
     CodeResponse updateBranch(String username, Branch branch);
 }

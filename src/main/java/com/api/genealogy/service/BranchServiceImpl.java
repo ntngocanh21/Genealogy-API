@@ -41,10 +41,10 @@ public class BranchServiceImpl implements BranchService  {
     }
 
     @Override
-    public BranchResponse createBranch(String username, Integer genealogyId, Branch branch) {
+    public BranchResponse createBranch(String username, Branch branch) {
         BranchResponse branchResponse = new BranchResponse();
         UserEntity userEntity = userRepository.findUserEntityByUsername(username);
-        GenealogyEntity genealogyEntity = genealogyRepository.findGenealogyEntityById(genealogyId);
+        GenealogyEntity genealogyEntity = genealogyRepository.findGenealogyEntityById(branch.getGenealogyId());
         BranchEntity branchEntity = new BranchEntity();
         if(genealogyEntity.getUserEntity().getId() == userEntity.getId()){
             branchEntity.setName(branch.getName());
@@ -115,7 +115,7 @@ public class BranchServiceImpl implements BranchService  {
         return codeResponse;
     }
 
-    private Branch parseBranchEntityToBranch(BranchEntity branchEntity) {
+    public static Branch parseBranchEntityToBranch(BranchEntity branchEntity) {
         Branch branch = new Branch();
         branch.setId(branchEntity.getId());
         branch.setDescription(branchEntity.getDescription());
@@ -125,7 +125,7 @@ public class BranchServiceImpl implements BranchService  {
         return branch;
     }
 
-    private List<Branch> parseListBranchEntityToListBranch(List<BranchEntity> branchEntities) {
+    public static List<Branch> parseListBranchEntityToListBranch(List<BranchEntity> branchEntities) {
         List<Branch> branches = new ArrayList<>();
         for (BranchEntity branchEntity : branchEntities) {
             Branch branch = parseBranchEntityToBranch(branchEntity);
