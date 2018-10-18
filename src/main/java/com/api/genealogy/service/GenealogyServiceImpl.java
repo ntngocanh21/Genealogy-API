@@ -99,7 +99,7 @@ public class GenealogyServiceImpl implements GenealogyService  {
             }
         }
         else {
-            codeResponse.setError(new MessageResponse(HTTPCodeResponse.OBJECT_NOT_FOUND,"No genealogy found"));
+            codeResponse.setError(new MessageResponse(HTTPCodeResponse.OBJECT_NOT_FOUND,"Genealogy doesn't exist"));
         }
         return codeResponse;
     }

@@ -1,66 +1,22 @@
-package com.api.genealogy.entity;
+package com.api.genealogy.model;
 
-import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
-@Entity
-@Table(name = "people")
-public class PeopleEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+public class People {
+
     private Integer id;
-
-    @ManyToOne
-    @JoinColumn(name = "branch_id", nullable = false)
-    public BranchEntity branchEntity;
-
-    @Basic
-    @Column(name = "name")
+    public Integer branchId;
     private String name;
-
-    @Basic
-    @Column(name = "nickname")
     private String nickname;
-
-    @Basic
-    @Column(name = "birthday")
     private Date birthday;
-
-    @Basic
-    @Column(name = "gender")
-    private int gender;
-
-    @Basic
-    @Column(name = "address")
+    private Integer gender;
     private String address;
-
-    @Basic
-    @Column(name = "death_day")
     private Date deathDay;
-
-    @Basic
-    @Column(name = "image")
     private String image;
-
-    @Basic
-    @Column(name = "degree")
     private String degree;
-
-    @Basic
-    @Column(name = "description")
     private String description;
-
-    @Column(name="life_index", nullable=true)
     private Integer lifeIndex;
-
-    @OneToMany(mappedBy = "parentEntity", cascade=CascadeType.ALL)
-    private List<PeopleEntity> peopleEntities;
-
-    @ManyToOne
-    @JoinColumn(name = "parent_id", nullable = true)
-    public PeopleEntity parentEntity;
+    public Integer parentId;
 
     public Integer getId() {
         return id;
@@ -70,12 +26,12 @@ public class PeopleEntity {
         this.id = id;
     }
 
-    public BranchEntity getBranchEntity() {
-        return branchEntity;
+    public Integer getBranchId() {
+        return branchId;
     }
 
-    public void setBranchEntity(BranchEntity branchEntity) {
-        this.branchEntity = branchEntity;
+    public void setBranchId(Integer branchId) {
+        this.branchId = branchId;
     }
 
     public String getName() {
@@ -102,11 +58,11 @@ public class PeopleEntity {
         this.birthday = birthday;
     }
 
-    public int getGender() {
+    public Integer getGender() {
         return gender;
     }
 
-    public void setGender(int gender) {
+    public void setGender(Integer gender) {
         this.gender = gender;
     }
 
@@ -158,19 +114,11 @@ public class PeopleEntity {
         this.lifeIndex = lifeIndex;
     }
 
-    public List<PeopleEntity> getPeopleEntities() {
-        return peopleEntities;
+    public Integer getParentId() {
+        return parentId;
     }
 
-    public void setPeopleEntities(List<PeopleEntity> peopleEntities) {
-        this.peopleEntities = peopleEntities;
-    }
-
-    public PeopleEntity getParentEntity() {
-        return parentEntity;
-    }
-
-    public void setParentEntity(PeopleEntity parentEntity) {
-        this.parentEntity = parentEntity;
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
     }
 }

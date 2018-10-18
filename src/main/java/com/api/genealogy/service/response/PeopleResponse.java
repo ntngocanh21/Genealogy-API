@@ -1,24 +1,20 @@
 package com.api.genealogy.service.response;
 
-import com.api.genealogy.entity.PeopleEntity;
-import com.api.genealogy.model.Branch;
+import com.api.genealogy.model.People;
 
 import java.util.List;
 
 public class PeopleResponse {
 
 	private MessageResponse error;
-    private List<PeopleEntity> peopleEntityList;
+    private List<People> peopleList;
 
     public PeopleResponse() {
     }
 
-    public PeopleResponse(MessageResponse error, List<PeopleEntity> peopleEntityList) {
+    public PeopleResponse(MessageResponse error, List<People> peopleList) {
         this.error = error;
-        this.peopleEntityList = peopleEntityList;
-    }
-
-    public PeopleResponse(MessageResponse error, PeopleEntity peopleEntity) {
+        this.peopleList = peopleList;
     }
 
     public MessageResponse getError() {
@@ -29,11 +25,11 @@ public class PeopleResponse {
         this.error = error;
     }
 
-    public List<PeopleEntity> getPeopleEntityList() {
-        return peopleEntityList;
+    public List<People> getPeopleList() {
+        return peopleList;
     }
 
-    public void setPeopleEntityList(List<PeopleEntity> peopleEntityList) {
-        this.peopleEntityList = peopleEntityList;
+    public void setPeopleList(List<People> peopleList) {
+        this.peopleList = peopleList;
     }
 }
