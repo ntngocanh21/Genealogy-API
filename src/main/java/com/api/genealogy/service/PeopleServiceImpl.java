@@ -124,7 +124,9 @@ public class PeopleServiceImpl implements PeopleService  {
         people.setLifeIndex(peopleEntity.getLifeIndex());
         people.setName(peopleEntity.getName());
         people.setNickname(peopleEntity.getNickname());
-        people.setParentId(peopleEntity.getParentEntity().getId());
+        if(peopleEntity.getParentEntity()!= null){
+            people.setParentId(peopleEntity.getParentEntity().getId());
+        }
         return people;
     }
 }
