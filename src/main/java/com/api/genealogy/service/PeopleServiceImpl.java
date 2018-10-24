@@ -1,6 +1,8 @@
 package com.api.genealogy.service;
 
 import com.api.genealogy.constant.HTTPCodeResponse;
+import com.api.genealogy.entity.BranchEntity;
+import com.api.genealogy.entity.GenealogyEntity;
 import com.api.genealogy.entity.PeopleEntity;
 import com.api.genealogy.entity.UserEntity;
 import com.api.genealogy.model.People;
@@ -51,8 +53,12 @@ public class PeopleServiceImpl implements PeopleService  {
     public PeopleResponse createPeople(String username, People people) {
         PeopleResponse peopleResponse = new PeopleResponse();
         PeopleEntity peopleEntity = parsePeopleToPeopleEntity(people);
-
         PeopleEntity newPeople = peopleRepository.save(peopleEntity);
+
+        BranchEntity branchEntity = branchRepository.findBranchEntityById(people.getBranchId());
+        branchEntity.setMember(branchEntity.getMember()+1);
+        branchRepository.save(branchEntity);
+
         ArrayList<People> peopleList = new ArrayList<>();
         peopleList.add(parsePeopleEntityToPeople(newPeople));
         peopleResponse.setError(new MessageResponse(HTTPCodeResponse.SUCCESS,"Success"));
@@ -63,13 +69,17 @@ public class PeopleServiceImpl implements PeopleService  {
     @Override
     public CodeResponse deletePeople(String username, Integer peopleId) {
         CodeResponse codeResponse = new CodeResponse();
-        UserEntity userEntity = userRepository.findUserEntityByUsername(username);
         PeopleEntity peopleEntity = peopleRepository.findPeopleEntityById(peopleId);
         if (peopleEntity == null){
             codeResponse.setError(new MessageResponse(HTTPCodeResponse.OBJECT_NOT_FOUND,"No people found"));
         }
         else {
             peopleRepository.deleteById(peopleId);
+
+            BranchEntity branchEntity = branchRepository.findBranchEntityById(peopleEntity.getBranchEntity().getId());
+            branchEntity.setMember(branchEntity.getMember()-1);
+            branchRepository.save(branchEntity);
+
             codeResponse.setError(new MessageResponse(HTTPCodeResponse.SUCCESS,"Success"));
         }
         return codeResponse;
@@ -78,7 +88,6 @@ public class PeopleServiceImpl implements PeopleService  {
     @Override
     public CodeResponse updatePeople(String username, People people) {
         CodeResponse codeResponse = new CodeResponse();
-        UserEntity userEntity = userRepository.findUserEntityByUsername(username);
         PeopleEntity peopleEntity = peopleRepository.findPeopleEntityById(people.getId());
         if (peopleEntity != null){
             peopleRepository.save(parsePeopleToPeopleEntity(people));
