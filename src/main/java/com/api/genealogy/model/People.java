@@ -17,6 +17,15 @@ public class People {
     private String description;
     private Integer lifeIndex;
     public Integer parentId;
+    public String appellation;
+
+    public String getAppellation() {
+        return appellation;
+    }
+
+    public void setAppellation(String appellation) {
+        this.appellation = appellation;
+    }
 
     public Integer getId() {
         return id;

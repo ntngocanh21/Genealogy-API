@@ -1,5 +1,6 @@
 package com.api.genealogy.service;
 
+import com.api.genealogy.constant.Gender;
 import com.api.genealogy.constant.HTTPCodeResponse;
 import com.api.genealogy.entity.BranchEntity;
 import com.api.genealogy.entity.GenealogyEntity;
@@ -9,6 +10,8 @@ import com.api.genealogy.model.People;
 import com.api.genealogy.repository.BranchRepository;
 import com.api.genealogy.repository.PeopleRepository;
 import com.api.genealogy.repository.UserRepository;
+import com.api.genealogy.service.relations.FamilyRelations;
+import com.api.genealogy.service.relations.Key;
 import com.api.genealogy.service.response.CodeResponse;
 import com.api.genealogy.service.response.MessageResponse;
 import com.api.genealogy.service.response.PeopleResponse;
@@ -77,7 +80,8 @@ public class PeopleServiceImpl implements PeopleService  {
             peopleRepository.deleteById(peopleId);
 
             BranchEntity branchEntity = branchRepository.findBranchEntityById(peopleEntity.getBranchEntity().getId());
-            branchEntity.setMember(branchEntity.getMember()-1);
+            List<PeopleEntity> peopleEntityList = peopleRepository.findPeopleEntitiesByBranchEntity_IdOrderByLifeIndex(branchEntity.getId());
+            branchEntity.setMember(peopleEntityList.size());
             branchRepository.save(branchEntity);
 
             codeResponse.setError(new MessageResponse(HTTPCodeResponse.SUCCESS,"Success"));
@@ -99,6 +103,121 @@ public class PeopleServiceImpl implements PeopleService  {
         return codeResponse;
     }
 
+    @Override
+    public PeopleResponse getFamilyRelation(int peopleId) {
+        FamilyRelations familyRelations = new FamilyRelations();
+
+        PeopleEntity centerPeople = peopleRepository.findPeopleEntityById(peopleId);
+        List<PeopleEntity> peopleEntityList = peopleRepository.findPeopleEntitiesByBranchEntity_IdOrderByLifeIndex(centerPeople.getBranchEntity().getId());
+
+        List<PeopleEntity> centerPeopleOrigin = new ArrayList<>();
+        centerPeopleOrigin = getPeopleOriginList(centerPeople, centerPeopleOrigin);
+
+        List<People> peopleResultList = new ArrayList<>();
+
+        for (PeopleEntity people : peopleEntityList){
+            if (people.getId() == centerPeople.getId()){
+                peopleResultList.add(parsePeopleEntityToPeople(people));
+            } else {
+                Key key = new Key();
+                if (people.getGender() == 1){
+                    key.setGender(Gender.MALE);
+                } else {
+                    key.setGender(Gender.FEMALE);
+                }
+
+                if(people.getParentEntity() != null){
+                    if (people.getParentEntity().getId() == centerPeople.getId() || centerPeople.getParentEntity().getId() == people.getId()
+                    || people.getParentEntity().getId() == centerPeople.getParentEntity().getId()){
+                        key.setInFamily(true);
+                    } else {
+                        key.setInFamily(false);
+                    }
+                } else {
+                    key.setInFamily(false);
+                }
+
+
+                int lifeDistance = people.getLifeIndex() - centerPeople.getLifeIndex();
+                if (lifeDistance > 5){
+                    lifeDistance = 5;
+                }
+                if (lifeDistance <-5){
+                    lifeDistance = -5;
+                }
+
+                key.setLifeDistance(lifeDistance);
+                key.setOriginOlder(null);
+
+
+                switch (lifeDistance){
+                    case 0:
+                    case -1:
+                        if (lifeDistance == 0){
+                            key.setInFamily(null);
+                        }
+
+                        if (key.getInFamily() != null && key.getInFamily() == true){
+                            key.setOriginOlder(null);
+                        } else{
+                            List<PeopleEntity> peopleOriginList = new ArrayList<>();
+                            peopleOriginList = getPeopleOriginList(people, peopleOriginList);
+
+                            for (int indexCenterPeopleOrigin = 0; indexCenterPeopleOrigin < centerPeopleOrigin.size(); indexCenterPeopleOrigin++){
+                                for (int indexPeopleOrigin = 0; indexPeopleOrigin < peopleOriginList.size(); indexPeopleOrigin++ ){
+                                    if (centerPeopleOrigin.get(indexCenterPeopleOrigin).getId() == peopleOriginList.get(indexPeopleOrigin).getId()) {
+                                        PeopleEntity people1 = centerPeopleOrigin.get(indexCenterPeopleOrigin -1);
+                                        PeopleEntity people2 = peopleOriginList.get(indexPeopleOrigin-1);
+
+                                        if(people1.getBirthday().after(people2.getBirthday())){
+                                            key.setOriginOlder(true);
+                                        }else {
+//                                    System.out.println("Date1 is before Date2");
+                                            key.setOriginOlder(false);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    case -5:
+                    case -4:
+                    case -3:
+                    case -2:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                        key.setInFamily(null);
+                        break;
+                    default:
+                        break;
+                }
+
+                People peopleResult = parsePeopleEntityToPeople(people);
+                peopleResult.setAppellation(familyRelations.getFamilyRelation(key.getKey()));
+                peopleResultList.add(peopleResult);
+            }
+        }
+        PeopleResponse peopleResponse = new PeopleResponse();
+        peopleResponse.setError(new MessageResponse(0, "Success"));
+        peopleResponse.setPeopleList(peopleResultList);
+
+        return peopleResponse;
+    }
+
+    private List<PeopleEntity> getPeopleOriginList(PeopleEntity peopleEntity, List<PeopleEntity> peopleOriginList){
+        if (peopleOriginList.size() == 0) {
+            peopleOriginList.add(peopleEntity);
+            getPeopleOriginList(peopleEntity, peopleOriginList);
+        } else {
+            if (peopleEntity.getParentEntity() != null){
+                peopleOriginList.add(peopleEntity.getParentEntity());
+                getPeopleOriginList(peopleEntity.getParentEntity(), peopleOriginList);
+            }
+        }
+        return peopleOriginList;
+    }
 
     private PeopleEntity parsePeopleToPeopleEntity(People people) {
         PeopleEntity peopleEntity = new PeopleEntity();
