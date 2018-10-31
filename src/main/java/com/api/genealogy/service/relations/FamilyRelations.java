@@ -41,7 +41,7 @@ public class FamilyRelations {
         familyRelations.put((new Key(0, Gender.FEMALE, true, null)).getKey(), "Chị");
         familyRelations.put((new Key(0, Gender.FEMALE, false, null)).getKey(), "Em gái");
         familyRelations.put((new Key(0, Gender.MALE, true, null)).getKey(), "Anh");
-        familyRelations.put((new Key(0, Gender.MALE, false, null)).getKey(), "Em trai");
+        familyRelations.put((new Key(0, Gender.MALE, false, null)).getKey(), "Em gái");
 
         familyRelations.put((new Key(1, Gender.FEMALE, null, true)).getKey(), "Con gái");
         familyRelations.put((new Key(1, Gender.MALE, null, true)).getKey(), "Con trai");

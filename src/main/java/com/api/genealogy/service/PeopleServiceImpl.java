@@ -162,19 +162,21 @@ public class PeopleServiceImpl implements PeopleService  {
                         } else{
                             List<PeopleEntity> peopleOriginList = new ArrayList<>();
                             peopleOriginList = getPeopleOriginList(people, peopleOriginList);
-
+                            outerloop:
                             for (int indexCenterPeopleOrigin = 0; indexCenterPeopleOrigin < centerPeopleOrigin.size(); indexCenterPeopleOrigin++){
                                 for (int indexPeopleOrigin = 0; indexPeopleOrigin < peopleOriginList.size(); indexPeopleOrigin++ ){
                                     if (centerPeopleOrigin.get(indexCenterPeopleOrigin).getId() == peopleOriginList.get(indexPeopleOrigin).getId()) {
                                         PeopleEntity people1 = centerPeopleOrigin.get(indexCenterPeopleOrigin -1);
                                         PeopleEntity people2 = peopleOriginList.get(indexPeopleOrigin-1);
 
-                                        if(people1.getBirthday().after(people2.getBirthday())){
+                                        if (people1.getBirthday().after(people2.getBirthday())) {
                                             key.setOriginOlder(true);
-                                        }else {
-//                                    System.out.println("Date1 is before Date2");
+                                            break outerloop;
+                                        } else {
                                             key.setOriginOlder(false);
+
                                         }
+
                                     }
                                 }
                             }
