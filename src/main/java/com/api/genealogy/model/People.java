@@ -1,5 +1,7 @@
 package com.api.genealogy.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class People {
@@ -8,10 +10,15 @@ public class People {
     public Integer branchId;
     private String name;
     private String nickname;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", timezone="Asia/Ho_Chi_Minh")
     private Date birthday;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", timezone="Asia/Ho_Chi_Minh")
+    private Date deathDay;
+
     private Integer gender;
     private String address;
-    private Date deathDay;
     private String image;
     private String degree;
     private String description;

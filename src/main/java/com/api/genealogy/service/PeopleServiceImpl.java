@@ -117,7 +117,9 @@ public class PeopleServiceImpl implements PeopleService  {
 
         for (PeopleEntity people : peopleEntityList){
             if (people.getId() == centerPeople.getId()){
-                peopleResultList.add(parsePeopleEntityToPeople(people));
+                People peopleCenter = parsePeopleEntityToPeople(people);
+                peopleCenter.setAppellation("Center");
+                peopleResultList.add(peopleCenter);
             } else {
                 Key key = new Key();
                 if (people.getGender() == 1){
