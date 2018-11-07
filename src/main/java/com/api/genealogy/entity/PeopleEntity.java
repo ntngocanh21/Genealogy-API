@@ -49,7 +49,7 @@ public class PeopleEntity {
     private String degree;
 
     @Basic
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition="TEXT")
     private String description;
 
     @Column(name="life_index", nullable=true)

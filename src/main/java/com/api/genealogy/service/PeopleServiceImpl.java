@@ -128,17 +128,14 @@ public class PeopleServiceImpl implements PeopleService  {
                     key.setGender(Gender.FEMALE);
                 }
 
-                if(people.getParentEntity() != null){
-                    if (people.getParentEntity().getId() == centerPeople.getId() || centerPeople.getParentEntity().getId() == people.getId()
-                    || people.getParentEntity().getId() == centerPeople.getParentEntity().getId()){
-                        key.setInFamily(true);
-                    } else {
-                        key.setInFamily(false);
-                    }
+                if((people.getParentEntity() != null && people.getParentEntity().getId() == centerPeople.getId()) ||
+                        (centerPeople.getParentEntity() != null && centerPeople.getParentEntity().getId() == people.getId()) ||
+                        (centerPeople.getParentEntity() != null && people.getParentEntity() != null && people.getParentEntity().getId() == centerPeople.getParentEntity().getId())
+                ){
+                    key.setInFamily(true);
                 } else {
                     key.setInFamily(false);
                 }
-
 
                 int lifeDistance = people.getLifeIndex() - centerPeople.getLifeIndex();
                 if (lifeDistance > 5){

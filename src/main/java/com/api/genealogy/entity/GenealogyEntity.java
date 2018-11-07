@@ -17,7 +17,7 @@ public class GenealogyEntity {
     private String name;
 
     @Basic
-    @Column(name = "history")
+    @Column(name = "history", columnDefinition="TEXT")
     private String history;
 
     @Basic

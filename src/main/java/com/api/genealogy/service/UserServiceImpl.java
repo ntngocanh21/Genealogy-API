@@ -1,15 +1,23 @@
 package com.api.genealogy.service;
 
 import com.api.genealogy.constant.HTTPCodeResponse;
+import com.api.genealogy.entity.UserBranchPermissionEntity;
 import com.api.genealogy.entity.UserEntity;
+import com.api.genealogy.model.Genealogy;
 import com.api.genealogy.model.User;
+import com.api.genealogy.model.UserBranchPermission;
+import com.api.genealogy.repository.UserBranchPermissionRepository;
 import com.api.genealogy.repository.UserRepository;
 import com.api.genealogy.security.JwtGenerator;
 import com.api.genealogy.service.response.LoginResponse;
 import com.api.genealogy.service.response.MessageResponse;
+import com.api.genealogy.service.response.UserResponse;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -19,6 +27,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private JwtGenerator jwtGenerator;
+
+    @Autowired
+    private UserBranchPermissionRepository userBranchPermissionRepository;
 
     @Override
     public LoginResponse login(User user) {

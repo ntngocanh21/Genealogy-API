@@ -48,6 +48,9 @@ public class UserEntity {
     @Column(name = "birthday")
     private Date birthday;
 
+    @OneToMany(mappedBy = "userBranchEntity", cascade=CascadeType.ALL)
+    private List<UserBranchPermissionEntity> userBranchPermissionEntities;
+
     @OneToMany(mappedBy = "userEntity", cascade=CascadeType.ALL)
     private List<GenealogyEntity> genealogyEntities;
 
@@ -137,6 +140,14 @@ public class UserEntity {
 
     public void setGenealogyEntities(List<GenealogyEntity> genealogyEntities) {
         this.genealogyEntities = genealogyEntities;
+    }
+
+    public List<UserBranchPermissionEntity> getUserBranchPermissionEntities() {
+        return userBranchPermissionEntities;
+    }
+
+    public void setUserBranchPermissionEntities(List<UserBranchPermissionEntity> userBranchPermissionEntities) {
+        this.userBranchPermissionEntities = userBranchPermissionEntities;
     }
 }
 

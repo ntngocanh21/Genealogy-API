@@ -17,7 +17,7 @@ public class BranchEntity {
     private String name;
 
     @Basic
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition="TEXT")
     private String description;
 
     @Basic
@@ -34,6 +34,9 @@ public class BranchEntity {
 
     @OneToMany(mappedBy = "branchEntity", cascade=CascadeType.ALL)
     private List<PeopleEntity> peopleEntities;
+
+    @OneToMany(mappedBy = "branchUserEntity", cascade=CascadeType.ALL)
+    private List<UserBranchPermissionEntity> userBranchPermissionEntities;
 
     public Integer getId() {
         return id;
@@ -81,6 +84,22 @@ public class BranchEntity {
 
     public void setGenealogyEntity(GenealogyEntity genealogyEntity) {
         this.genealogyEntity = genealogyEntity;
+    }
+
+    public List<PeopleEntity> getPeopleEntities() {
+        return peopleEntities;
+    }
+
+    public void setPeopleEntities(List<PeopleEntity> peopleEntities) {
+        this.peopleEntities = peopleEntities;
+    }
+
+    public List<UserBranchPermissionEntity> getUserBranchPermissionEntities() {
+        return userBranchPermissionEntities;
+    }
+
+    public void setUserBranchPermissionEntities(List<UserBranchPermissionEntity> userBranchPermissionEntities) {
+        this.userBranchPermissionEntities = userBranchPermissionEntities;
     }
 }
 
