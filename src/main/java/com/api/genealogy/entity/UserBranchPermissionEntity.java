@@ -26,6 +26,17 @@ public class UserBranchPermissionEntity {
     @JoinColumn(name = "branch_permission_id", nullable = false)
     public BranchPermissionEntity branchPermissionEntity;
 
+    public UserBranchPermissionEntity(){
+
+    }
+
+    public UserBranchPermissionEntity(boolean status, BranchEntity branchUserEntity, UserEntity userBranchEntity, BranchPermissionEntity branchPermissionEntity) {
+        this.status = status;
+        this.branchUserEntity = branchUserEntity;
+        this.userBranchEntity = userBranchEntity;
+        this.branchPermissionEntity = branchPermissionEntity;
+    }
+
     public Integer getId() {
         return id;
     }

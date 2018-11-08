@@ -1,11 +1,15 @@
 package com.api.genealogy.service;
 
 import com.api.genealogy.constant.HTTPCodeResponse;
+import com.api.genealogy.entity.BranchEntity;
 import com.api.genealogy.entity.UserBranchPermissionEntity;
+import com.api.genealogy.entity.UserEntity;
 import com.api.genealogy.model.User;
 import com.api.genealogy.model.UserBranchPermission;
 import com.api.genealogy.repository.BranchPermissionRepository;
+import com.api.genealogy.repository.BranchRepository;
 import com.api.genealogy.repository.UserBranchPermissionRepository;
+import com.api.genealogy.repository.UserRepository;
 import com.api.genealogy.service.response.CodeResponse;
 import com.api.genealogy.service.response.MessageResponse;
 import com.api.genealogy.service.response.UserResponse;
@@ -17,6 +21,12 @@ import java.util.List;
 
 @Service
 public class MemberServiceImpl implements MemberService {
+
+    @Autowired
+    private BranchRepository branchRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private UserBranchPermissionRepository userBranchPermissionRepository;
@@ -57,6 +67,18 @@ public class MemberServiceImpl implements MemberService {
         userBranchPermissionRepository.save(userBranchPermissionEntity);
         codeResponse.setError(new MessageResponse(HTTPCodeResponse.SUCCESS,"Success"));
 
+        return codeResponse;
+    }
+
+    @Override
+    public CodeResponse joinBranch(UserBranchPermission userBranchPermission) {
+        UserEntity userEntity = userRepository.findUserEntityByUsername(userBranchPermission.getUsername());
+        BranchEntity branchEntity = branchRepository.findBranchEntityById(userBranchPermission.getBranch_id());
+        UserBranchPermissionEntity userBranchPermissionEntity = new UserBranchPermissionEntity(false, branchEntity, userEntity, branchPermissionRepository.findBranchPermissionEntityById(userBranchPermission.getBranch_permission_id()));
+        userBranchPermissionRepository.save(userBranchPermissionEntity);
+
+        CodeResponse codeResponse = new CodeResponse();
+        codeResponse.setError(new MessageResponse(HTTPCodeResponse.SUCCESS,"Success"));
         return codeResponse;
     }
 
