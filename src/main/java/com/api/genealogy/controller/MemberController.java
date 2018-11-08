@@ -34,4 +34,9 @@ public class MemberController {
     public ResponseEntity changeRoleMemberOfBranch(@RequestBody UserBranchPermission userBranchPermission) {
         return new ResponseEntity<>(memberService.changeRoleMemberOfBranch(userBranchPermission), HttpStatus.OK);
     }
+
+    @PostMapping("/member/branch")
+    public ResponseEntity joinBranch(@RequestBody UserBranchPermission userBranchPermission) {
+        return new ResponseEntity<>(memberService.joinBranch(userBranchPermission), HttpStatus.OK);
+    }
 }
