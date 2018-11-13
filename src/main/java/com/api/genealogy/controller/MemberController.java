@@ -39,4 +39,5 @@ public class MemberController {
     public ResponseEntity joinBranch(@RequestBody UserBranchPermission userBranchPermission) {
         return new ResponseEntity<>(memberService.joinBranch(userBranchPermission), HttpStatus.OK);
     }
+    
 }
