@@ -113,7 +113,7 @@ public class GenealogyServiceImpl implements GenealogyService  {
             codeResponse.setError(new MessageResponse(HTTPCodeResponse.OBJECT_NOT_FOUND,"No genealogy found"));
         }
         else {
-            if(genealogyEntity.getUserEntgit ity().getId() == userEntity.getId()){
+            if(genealogyEntity.getUserEntity().getId() == userEntity.getId()){
                 genealogyRepository.deleteById(genealogyId);
                 codeResponse.setError(new MessageResponse(HTTPCodeResponse.SUCCESS,"Success"));
             }
