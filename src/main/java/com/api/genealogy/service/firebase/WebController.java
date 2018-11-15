@@ -9,12 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController()
-@RequestMapping("/api")
 public class WebController {
 
 	private final String TOPIC = "JavaSampleApproach";
@@ -22,7 +17,6 @@ public class WebController {
 	@Autowired
 	AndroidPushNotificationsService androidPushNotificationsService;
  
-	@GetMapping("/notification/requestjoinmember")
 	public ResponseEntity<String> send() throws JSONException {
  
 		JSONObject body = new JSONObject();
