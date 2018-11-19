@@ -43,15 +43,6 @@ public class PeopleServiceImpl implements PeopleService  {
         return peopleResponse;
     }
 
-    private List<People> parseListPeopleEntityToListPeople(List<PeopleEntity> peopleEntities) {
-        List<People> peopleList = new ArrayList<>();
-        for (PeopleEntity peopleEntity : peopleEntities) {
-            People people = parsePeopleEntityToPeople(peopleEntity);
-            peopleList.add(people);
-        }
-        return peopleList;
-    }
-
     @Override
     public PeopleResponse createPeople(String username, People people) {
         PeopleResponse peopleResponse = new PeopleResponse();
@@ -257,5 +248,14 @@ public class PeopleServiceImpl implements PeopleService  {
             people.setParentId(peopleEntity.getParentEntity().getId());
         }
         return people;
+    }
+
+    public List<People> parseListPeopleEntityToListPeople(List<PeopleEntity> peopleEntities) {
+        List<People> peopleList = new ArrayList<>();
+        for (PeopleEntity peopleEntity : peopleEntities) {
+            People people = parsePeopleEntityToPeople(peopleEntity);
+            peopleList.add(people);
+        }
+        return peopleList;
     }
 }

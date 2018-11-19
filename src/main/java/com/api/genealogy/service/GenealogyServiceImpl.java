@@ -135,7 +135,7 @@ public class GenealogyServiceImpl implements GenealogyService  {
         return genealogy;
     }
 
-    private List<Genealogy> parseListGenealogyEntityToListGenealogy(List<GenealogyEntity> genealogyEntities) {
+    public List<Genealogy> parseListGenealogyEntityToListGenealogy(List<GenealogyEntity> genealogyEntities) {
         List<Genealogy> genealogies = new ArrayList<>();
         for (GenealogyEntity genealogyEntity : genealogyEntities) {
             Genealogy genealogy = parseGenealogyEntityToGenealogy(genealogyEntity);
