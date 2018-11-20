@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface GenealogyRepository extends CrudRepository<GenealogyEntity, Integer> {
     List<GenealogyEntity> findGenealogyEntitiesByUserEntity_UsernameOrderByName(String username);
-    GenealogyEntity findGenealogyEntityById(Integer id);
+    GenealogyEntity findGenealogyEntityByIdOrderByName(Integer id);
 }
 

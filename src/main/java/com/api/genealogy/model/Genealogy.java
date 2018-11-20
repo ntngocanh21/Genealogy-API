@@ -12,6 +12,7 @@ public class Genealogy {
     private Integer branch;
     private String owner;
     private List<Branch> branchList;
+    private Integer role;
 
     public Genealogy() {
     }
@@ -70,5 +71,13 @@ public class Genealogy {
 
     public void setBranchList(List<Branch> branchList) {
         this.branchList = branchList;
+    }
+
+    public Integer getRole() {
+        return role;
+    }
+
+    public void setRole(Integer role) {
+        this.role = role;
     }
 }

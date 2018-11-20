@@ -33,7 +33,7 @@ public class BranchServiceImpl implements BranchService  {
     @Override
     public BranchResponse getBranchesByGenealogyId(Integer genealogyId) {
         List<BranchEntity> branchEntities = (List<BranchEntity>) branchRepository
-                .findBranchEntitiesByGenealogyEntity_Id(genealogyId);
+                .findBranchEntitiesByGenealogyEntity_IdOrderByName(genealogyId);
         List<Branch> branches = parseListBranchEntityToListBranch(branchEntities);
         MessageResponse messageResponse = new MessageResponse(0,"Success");
         BranchResponse branchResponse = new BranchResponse(messageResponse, branches);
@@ -44,7 +44,7 @@ public class BranchServiceImpl implements BranchService  {
     public BranchResponse createBranch(String username, Branch branch) {
         BranchResponse branchResponse = new BranchResponse();
         UserEntity userEntity = userRepository.findUserEntityByUsername(username);
-        GenealogyEntity genealogyEntity = genealogyRepository.findGenealogyEntityById(branch.getGenealogyId());
+        GenealogyEntity genealogyEntity = genealogyRepository.findGenealogyEntityByIdOrderByName(branch.getGenealogyId());
         BranchEntity branchEntity = new BranchEntity();
         if(genealogyEntity.getUserEntity().getId() == userEntity.getId()){
             branchEntity.setName(branch.getName());
@@ -74,7 +74,7 @@ public class BranchServiceImpl implements BranchService  {
     public CodeResponse deleteBranch(String username, Integer branchId) {
         CodeResponse codeResponse = new CodeResponse();
         UserEntity userEntity = userRepository.findUserEntityByUsername(username);
-        BranchEntity branchEntity = branchRepository.findBranchEntityById(branchId);
+        BranchEntity branchEntity = branchRepository.findBranchEntityByIdOrderByName(branchId);
         if (branchEntity == null){
             codeResponse.setError(new MessageResponse(HTTPCodeResponse.OBJECT_NOT_FOUND,"No branch found"));
         }
@@ -97,7 +97,7 @@ public class BranchServiceImpl implements BranchService  {
     public CodeResponse updateBranch(String username, Branch branch) {
         CodeResponse codeResponse = new CodeResponse();
         UserEntity userEntity = userRepository.findUserEntityByUsername(username);
-        BranchEntity branchEntity = branchRepository.findBranchEntityById(branch.getId());
+        BranchEntity branchEntity = branchRepository.findBranchEntityByIdOrderByName(branch.getId());
         if (branchEntity == null){
             codeResponse.setError(new MessageResponse(HTTPCodeResponse.OBJECT_NOT_FOUND,"No branch found"));
         }

@@ -11,6 +11,7 @@ public class Branch {
     private Date date;
     private Integer member;
     private Integer genealogyId;
+    private Integer role;
 
     public Branch() {
     }
@@ -61,5 +62,13 @@ public class Branch {
 
     public void setGenealogyId(Integer genealogyId) {
         this.genealogyId = genealogyId;
+    }
+
+    public Integer getRole() {
+        return role;
+    }
+
+    public void setRole(Integer role) {
+        this.role = role;
     }
 }
