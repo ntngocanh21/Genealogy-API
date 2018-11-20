@@ -1,13 +1,14 @@
 package com.api.genealogy.service;
 
+import com.api.genealogy.constant.GenealogyBranchRole;
 import com.api.genealogy.constant.HTTPCodeResponse;
 import com.api.genealogy.entity.BranchEntity;
 import com.api.genealogy.entity.GenealogyEntity;
+import com.api.genealogy.entity.UserBranchPermissionEntity;
 import com.api.genealogy.entity.UserEntity;
 import com.api.genealogy.model.Branch;
-import com.api.genealogy.repository.BranchRepository;
-import com.api.genealogy.repository.GenealogyRepository;
-import com.api.genealogy.repository.UserRepository;
+import com.api.genealogy.model.UserBranchPermission;
+import com.api.genealogy.repository.*;
 import com.api.genealogy.service.response.BranchResponse;
 import com.api.genealogy.service.response.CodeResponse;
 import com.api.genealogy.service.response.MessageResponse;
@@ -29,6 +30,12 @@ public class BranchServiceImpl implements BranchService  {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private BranchPermissionRepository branchPermissionRepository;
+
+    @Autowired
+    private UserBranchPermissionRepository userBranchPermissionRepository;
 
     @Override
     public BranchResponse getBranchesByGenealogyId(Integer genealogyId) {
@@ -57,8 +64,14 @@ public class BranchServiceImpl implements BranchService  {
             genealogyEntity.setBranch(genealogyEntity.getBranch()+1);
             genealogyRepository.save(genealogyEntity);
 
+            UserBranchPermissionEntity userBranchPermissionEntity = new UserBranchPermissionEntity(true, newBranch,
+                    userEntity, branchPermissionRepository.findBranchPermissionEntityById(GenealogyBranchRole.ADMIN));
+            userBranchPermissionRepository.save(userBranchPermissionEntity);
+
             ArrayList<Branch> branches = new ArrayList<>();
-            branches.add(parseBranchEntityToBranch(newBranch));
+            Branch createdBranch = parseBranchEntityToBranch(newBranch);
+            createdBranch.setRole(GenealogyBranchRole.ADMIN);
+            branches.add(createdBranch);
             branchResponse.setError(new MessageResponse(HTTPCodeResponse.SUCCESS,"Success"));
             branchResponse.setBranchList(branches);
             return branchResponse;

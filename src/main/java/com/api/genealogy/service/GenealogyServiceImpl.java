@@ -128,7 +128,9 @@ public class GenealogyServiceImpl implements GenealogyService  {
 
         GenealogyEntity newGenealogy = genealogyRepository.save(genealogyEntity);
         ArrayList<Genealogy> genealogies = new ArrayList<>();
-        genealogies.add(parseGenealogyEntityToGenealogy(newGenealogy));
+        Genealogy createdGenealogy = parseGenealogyEntityToGenealogy(newGenealogy);
+        createdGenealogy.setRole(GenealogyBranchRole.ADMIN);
+        genealogies.add(createdGenealogy);
         genealogyResponse.setError(new MessageResponse(HTTPCodeResponse.SUCCESS,"Success"));
         genealogyResponse.setGenealogyList(genealogies);
         return genealogyResponse;

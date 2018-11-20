@@ -99,7 +99,7 @@ public class MemberServiceImpl implements MemberService {
         User user = new User();
         user.setUsername(userBranchPermissionEntity.getUserBranchEntity().getUsername());
         user.setFullname(userBranchPermissionEntity.getUserBranchEntity().getFullname());
-        user.setRole(userBranchPermissionEntity.getBranchPermissionEntity().getPermissionName());
+        user.setRole(userBranchPermissionEntity.getBranchPermissionEntity().getId());
         return user;
     }
 

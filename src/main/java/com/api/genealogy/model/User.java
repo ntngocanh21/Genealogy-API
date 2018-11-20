@@ -15,13 +15,13 @@ public class User {
     private String avatar;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", timezone="Asia/Ho_Chi_Minh")
     private Date birthday;
-    private String role;
+    private Integer role;
 
 
     public User() {
     }
 
-    public User(Integer id, String username, String password, String mail, String fullname, Boolean gender, String address, String avatar, Date birthday, Date createdDate, Date lastUpdated, String role) {
+    public User(Integer id, String username, String password, String mail, String fullname, Boolean gender, String address, String avatar, Date birthday, Date createdDate, Date lastUpdated, Integer role) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -34,11 +34,11 @@ public class User {
         this.role = role;
     }
 
-    public String getRole() {
+    public Integer getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Integer role) {
         this.role = role;
     }
 
