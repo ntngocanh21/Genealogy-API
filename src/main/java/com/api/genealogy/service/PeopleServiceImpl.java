@@ -43,22 +43,13 @@ public class PeopleServiceImpl implements PeopleService  {
         return peopleResponse;
     }
 
-    private List<People> parseListPeopleEntityToListPeople(List<PeopleEntity> peopleEntities) {
-        List<People> peopleList = new ArrayList<>();
-        for (PeopleEntity peopleEntity : peopleEntities) {
-            People people = parsePeopleEntityToPeople(peopleEntity);
-            peopleList.add(people);
-        }
-        return peopleList;
-    }
-
     @Override
     public PeopleResponse createPeople(String username, People people) {
         PeopleResponse peopleResponse = new PeopleResponse();
         PeopleEntity peopleEntity = parsePeopleToPeopleEntity(people);
         PeopleEntity newPeople = peopleRepository.save(peopleEntity);
 
-        BranchEntity branchEntity = branchRepository.findBranchEntityById(people.getBranchId());
+        BranchEntity branchEntity = branchRepository.findBranchEntityByIdOrderByName(people.getBranchId());
         branchEntity.setMember(branchEntity.getMember()+1);
         branchRepository.save(branchEntity);
 
@@ -79,7 +70,7 @@ public class PeopleServiceImpl implements PeopleService  {
         else {
             peopleRepository.deleteById(peopleId);
 
-            BranchEntity branchEntity = branchRepository.findBranchEntityById(peopleEntity.getBranchEntity().getId());
+            BranchEntity branchEntity = branchRepository.findBranchEntityByIdOrderByName(peopleEntity.getBranchEntity().getId());
             List<PeopleEntity> peopleEntityList = peopleRepository.findPeopleEntitiesByBranchEntity_IdOrderByLifeIndex(branchEntity.getId());
             branchEntity.setMember(peopleEntityList.size());
             branchRepository.save(branchEntity);
@@ -225,7 +216,7 @@ public class PeopleServiceImpl implements PeopleService  {
         peopleEntity.setImage(people.getImage());
         peopleEntity.setAddress(people.getAddress());
         peopleEntity.setBirthday(people.getBirthday());
-        peopleEntity.setBranchEntity(branchRepository.findBranchEntityById(people.getBranchId()));
+        peopleEntity.setBranchEntity(branchRepository.findBranchEntityByIdOrderByName(people.getBranchId()));
         peopleEntity.setDeathDay(people.getDeathDay());
         peopleEntity.setDegree(people.getDegree());
         peopleEntity.setDescription(people.getDescription());
@@ -257,5 +248,14 @@ public class PeopleServiceImpl implements PeopleService  {
             people.setParentId(peopleEntity.getParentEntity().getId());
         }
         return people;
+    }
+
+    public List<People> parseListPeopleEntityToListPeople(List<PeopleEntity> peopleEntities) {
+        List<People> peopleList = new ArrayList<>();
+        for (PeopleEntity peopleEntity : peopleEntities) {
+            People people = parsePeopleEntityToPeople(peopleEntity);
+            peopleList.add(people);
+        }
+        return peopleList;
     }
 }

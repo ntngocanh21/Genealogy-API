@@ -73,7 +73,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public CodeResponse joinBranch(UserBranchPermission userBranchPermission) {
         UserEntity userEntity = userRepository.findUserEntityByUsername(userBranchPermission.getUsername());
-        BranchEntity branchEntity = branchRepository.findBranchEntityById(userBranchPermission.getBranch_id());
+        BranchEntity branchEntity = branchRepository.findBranchEntityByIdOrderByName(userBranchPermission.getBranch_id());
         UserBranchPermissionEntity userBranchPermissionEntity = new UserBranchPermissionEntity(false, branchEntity, userEntity, branchPermissionRepository.findBranchPermissionEntityById(userBranchPermission.getBranch_permission_id()));
         userBranchPermissionRepository.save(userBranchPermissionEntity);
 
@@ -99,7 +99,7 @@ public class MemberServiceImpl implements MemberService {
         User user = new User();
         user.setUsername(userBranchPermissionEntity.getUserBranchEntity().getUsername());
         user.setFullname(userBranchPermissionEntity.getUserBranchEntity().getFullname());
-        user.setRole(userBranchPermissionEntity.getBranchPermissionEntity().getPermissionName());
+        user.setRole(userBranchPermissionEntity.getBranchPermissionEntity().getId());
         return user;
     }
 

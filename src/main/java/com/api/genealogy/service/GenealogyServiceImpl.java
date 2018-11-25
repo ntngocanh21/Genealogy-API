@@ -1,13 +1,10 @@
 package com.api.genealogy.service;
 
+import com.api.genealogy.constant.GenealogyBranchRole;
 import com.api.genealogy.constant.HTTPCodeResponse;
-import com.api.genealogy.entity.BranchEntity;
-import com.api.genealogy.entity.GenealogyEntity;
-import com.api.genealogy.entity.UserEntity;
+import com.api.genealogy.entity.*;
 import com.api.genealogy.model.*;
-import com.api.genealogy.repository.BranchRepository;
-import com.api.genealogy.repository.GenealogyRepository;
-import com.api.genealogy.repository.UserRepository;
+import com.api.genealogy.repository.*;
 import com.api.genealogy.service.response.CodeResponse;
 import com.api.genealogy.service.response.GenealogyResponse;
 import com.api.genealogy.service.response.MessageResponse;
@@ -30,6 +27,12 @@ public class GenealogyServiceImpl implements GenealogyService  {
     @Autowired
     private BranchRepository branchRepository;
 
+    @Autowired
+    private UserBranchPermissionRepository userBranchPermissionRepository;
+
+    @Autowired
+    private BranchPermissionRepository branchPermissionRepository;
+
     @Override
     public GenealogyResponse getGenealogies() {
         List<GenealogyEntity> genealogyEntities = (List<GenealogyEntity>) genealogyRepository.findAll();
@@ -46,21 +49,70 @@ public class GenealogyServiceImpl implements GenealogyService  {
 
     @Override
     public GenealogyResponse getGenealogiesByUsername(String username) {
+        List<Genealogy> genealogyListResult = new ArrayList<>();
         List<GenealogyEntity> genealogyEntities = (List<GenealogyEntity>) genealogyRepository
                 .findGenealogyEntitiesByUserEntity_UsernameOrderByName(username);
-        if (genealogyEntities.isEmpty()) {
-            MessageResponse messageResponse = new MessageResponse(404,"No genealogy found");
-            GenealogyResponse genealogyResponse = new GenealogyResponse(messageResponse, null);
-            return genealogyResponse;
+        if (!genealogyEntities.isEmpty()) {
+            List<Genealogy> genealogies = parseListGenealogyEntityToListGenealogy(genealogyEntities);
+            for (Genealogy genealogy : genealogies){
+                List<BranchEntity> branchEntityList = branchRepository.findBranchEntitiesByGenealogyEntity_IdOrderByName(genealogy.getId());
+                List<Branch> branchList = BranchServiceImpl.parseListBranchEntityToListBranch(branchEntityList);
+                for(Branch branch: branchList){
+                    branch.setRole(GenealogyBranchRole.ADMIN);
+                }
+                genealogy.setBranchList(branchList);
+                genealogy.setRole(GenealogyBranchRole.ADMIN);
+                genealogyListResult.add(genealogy);
+            }
         }
-        List<Genealogy> genealogies = parseListGenealogyEntityToListGenealogy(genealogyEntities);
-        for (Genealogy genealogy : genealogies){
-            List<BranchEntity> branchEntityList = branchRepository.findBranchEntitiesByGenealogyEntity_Id(genealogy.getId());
-            genealogy.setBranchList(BranchServiceImpl.parseListBranchEntityToListBranch(branchEntityList));
-        }
+
+        genealogyListResult = findGenealogyByUsernameAndRole(username, GenealogyBranchRole.MOD, genealogyListResult);
+        genealogyListResult = findGenealogyByUsernameAndRole(username, GenealogyBranchRole.MEMBER, genealogyListResult);
+
         MessageResponse messageResponse = new MessageResponse(0,"Success");
-        GenealogyResponse genealogyResponse = new GenealogyResponse(messageResponse, genealogies);
+        GenealogyResponse genealogyResponse = new GenealogyResponse(messageResponse, genealogyListResult);
         return genealogyResponse;
+
+    }
+
+    private List<Genealogy> findGenealogyByUsernameAndRole(String username, int role, List<Genealogy> genealogyListResult){
+        UserEntity user = userRepository.findUserEntityByUsername(username);
+        //find branch user had mod/member role
+        List<UserBranchPermissionEntity> userBranchPermissionEntities = userBranchPermissionRepository
+                .findUserBranchPermissionEntitiesByBranchPermissionEntityAndStatusAndUserBranchEntity(
+                        branchPermissionRepository.findBranchPermissionEntityById(role),true, user);
+
+        if (!userBranchPermissionEntities.isEmpty()) {
+            for (UserBranchPermissionEntity userBranchPermissionEntity : userBranchPermissionEntities){
+                GenealogyEntity genealogyEntity = userBranchPermissionEntity.getBranchUserEntity().getGenealogyEntity();
+
+                boolean checkGenealogyInList = false;
+
+                if (genealogyListResult.size() != 0) {
+                    for (Genealogy genealogy : genealogyListResult) {
+                        //if genealogy of branch == genelogy in resultList
+                        if (genealogyEntity.getId() == genealogy.getId()) {
+                            checkGenealogyInList = true;
+                            List<Branch> branchList = genealogy.getBranchList();
+                            Branch branch = BranchServiceImpl.parseBranchEntityToBranch(userBranchPermissionEntity.getBranchUserEntity());
+                            branch.setRole(role);
+                            branchList.add(branch);
+                            genealogy.setBranchList(branchList);
+                            genealogy.setRole(GenealogyBranchRole.MEMBER);
+                        } else {
+                            checkGenealogyInList = false;
+                        }
+                    }
+
+                    if(checkGenealogyInList == false){
+                        addGenealogyToResult(genealogyEntity, genealogyListResult, role, userBranchPermissionEntity);
+                    }
+                } else {
+                    addGenealogyToResult(genealogyEntity, genealogyListResult, role, userBranchPermissionEntity);
+                }
+            }
+        }
+        return genealogyListResult;
     }
 
     @Override
@@ -76,17 +128,29 @@ public class GenealogyServiceImpl implements GenealogyService  {
 
         GenealogyEntity newGenealogy = genealogyRepository.save(genealogyEntity);
         ArrayList<Genealogy> genealogies = new ArrayList<>();
-        genealogies.add(parseGenealogyEntityToGenealogy(newGenealogy));
+        Genealogy createdGenealogy = parseGenealogyEntityToGenealogy(newGenealogy);
+        createdGenealogy.setRole(GenealogyBranchRole.ADMIN);
+        genealogies.add(createdGenealogy);
         genealogyResponse.setError(new MessageResponse(HTTPCodeResponse.SUCCESS,"Success"));
         genealogyResponse.setGenealogyList(genealogies);
         return genealogyResponse;
+    }
+
+    private void addGenealogyToResult(GenealogyEntity genealogyEntity, List<Genealogy> genealogyListResult, int role, UserBranchPermissionEntity userBranchPermissionEntity){
+        Genealogy genealogy = parseGenealogyEntityToGenealogy(genealogyEntity);
+        List<Branch> branchList = new ArrayList<>();
+        Branch branch = BranchServiceImpl.parseBranchEntityToBranch(userBranchPermissionEntity.getBranchUserEntity());
+        branch.setRole(role);
+        branchList.add(branch);
+        genealogy.setBranchList(branchList);
+        genealogyListResult.add(genealogy);
     }
 
     @Override
     public CodeResponse updateGenealogy(String username, Genealogy genealogy) {
         CodeResponse codeResponse = new CodeResponse();
         UserEntity userEntity = userRepository.findUserEntityByUsername(username);
-        GenealogyEntity genealogyEntity = genealogyRepository.findGenealogyEntityById(genealogy.getId());
+        GenealogyEntity genealogyEntity = genealogyRepository.findGenealogyEntityByIdOrderByName(genealogy.getId());
         if (genealogyEntity != null){
             if(genealogyEntity.getUserEntity().getId() == userEntity.getId()){
                 genealogyEntity.setName(genealogy.getName());
@@ -108,7 +172,7 @@ public class GenealogyServiceImpl implements GenealogyService  {
     public CodeResponse deleteGenealogy(String username, Integer genealogyId) {
         CodeResponse codeResponse = new CodeResponse();
         UserEntity userEntity = userRepository.findUserEntityByUsername(username);
-        GenealogyEntity genealogyEntity = genealogyRepository.findGenealogyEntityById(genealogyId);
+        GenealogyEntity genealogyEntity = genealogyRepository.findGenealogyEntityByIdOrderByName(genealogyId);
         if (genealogyEntity == null){
             codeResponse.setError(new MessageResponse(HTTPCodeResponse.OBJECT_NOT_FOUND,"No genealogy found"));
         }
@@ -124,7 +188,7 @@ public class GenealogyServiceImpl implements GenealogyService  {
         return codeResponse;
     }
 
-    private Genealogy parseGenealogyEntityToGenealogy(GenealogyEntity genealogyEntity) {
+    public static Genealogy parseGenealogyEntityToGenealogy(GenealogyEntity genealogyEntity) {
         Genealogy genealogy = new Genealogy();
         genealogy.setId(genealogyEntity.getId());
         genealogy.setHistory(genealogyEntity.getHistory());
@@ -135,7 +199,7 @@ public class GenealogyServiceImpl implements GenealogyService  {
         return genealogy;
     }
 
-    private List<Genealogy> parseListGenealogyEntityToListGenealogy(List<GenealogyEntity> genealogyEntities) {
+    public static List<Genealogy> parseListGenealogyEntityToListGenealogy(List<GenealogyEntity> genealogyEntities) {
         List<Genealogy> genealogies = new ArrayList<>();
         for (GenealogyEntity genealogyEntity : genealogyEntities) {
             Genealogy genealogy = parseGenealogyEntityToGenealogy(genealogyEntity);
