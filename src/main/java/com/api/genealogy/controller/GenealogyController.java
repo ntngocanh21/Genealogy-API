@@ -42,7 +42,7 @@ public class GenealogyController {
     public ResponseEntity getGenealogies() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserName = authentication.getName();
-        return new ResponseEntity<>(genealogyService.getGenealogies(), HttpStatus.OK);
+        return new ResponseEntity<>(genealogyService.getGenealogies(currentUserName), HttpStatus.OK);
     }
 
     @GetMapping("/genealogy/user")

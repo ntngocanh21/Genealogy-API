@@ -33,18 +33,35 @@ public class GenealogyServiceImpl implements GenealogyService  {
     @Autowired
     private BranchPermissionRepository branchPermissionRepository;
 
+    @Autowired
+    private GenealogyService genealogyService;
+
     @Override
-    public GenealogyResponse getGenealogies() {
+    public GenealogyResponse getGenealogies(String username) {
         List<GenealogyEntity> genealogyEntities = (List<GenealogyEntity>) genealogyRepository.findAll();
         if (genealogyEntities.isEmpty()) {
             MessageResponse messageResponse = new MessageResponse(404,"No genealogy found");
             GenealogyResponse genealogyResponse = new GenealogyResponse(messageResponse, null);
             return genealogyResponse;
+        } else {
+            List<Genealogy> genealogies = parseListGenealogyEntityToListGenealogy(genealogyEntities);
+            List<Genealogy> listGenealogyOfUser = genealogyService.getGenealogiesByUsername(username).getGenealogyList();
+            List<Branch> listBranchListFound = new ArrayList<>();
+            for(Genealogy genealogyFound : genealogies){
+                listBranchListFound.addAll(genealogyFound.getBranchList());
+            }
+            SearchServiceImpl.compareGenealogyList(genealogies, listGenealogyOfUser);
+
+            List<Branch> listBranchOfUser = new ArrayList<>();
+            for(Genealogy genealogy : listGenealogyOfUser){
+                listBranchOfUser.addAll(genealogy.getBranchList());
+            }
+            SearchServiceImpl.compareBranchList(listBranchListFound, listBranchOfUser);
+
+            MessageResponse messageResponse = new MessageResponse(0,"Success");
+            GenealogyResponse genealogyResponse = new GenealogyResponse(messageResponse, genealogies);
+            return genealogyResponse;
         }
-        List<Genealogy> genealogies = parseListGenealogyEntityToListGenealogy(genealogyEntities);
-        MessageResponse messageResponse = new MessageResponse(0,"Success");
-        GenealogyResponse genealogyResponse = new GenealogyResponse(messageResponse, genealogies);
-        return genealogyResponse;
     }
 
     @Override
@@ -55,12 +72,9 @@ public class GenealogyServiceImpl implements GenealogyService  {
         if (!genealogyEntities.isEmpty()) {
             List<Genealogy> genealogies = parseListGenealogyEntityToListGenealogy(genealogyEntities);
             for (Genealogy genealogy : genealogies){
-                List<BranchEntity> branchEntityList = branchRepository.findBranchEntitiesByGenealogyEntity_IdOrderByName(genealogy.getId());
-                List<Branch> branchList = BranchServiceImpl.parseListBranchEntityToListBranch(branchEntityList);
-                for(Branch branch: branchList){
+                for(Branch branch: genealogy.getBranchList()){
                     branch.setRole(GenealogyBranchRole.ADMIN);
                 }
-                genealogy.setBranchList(branchList);
                 genealogy.setRole(GenealogyBranchRole.ADMIN);
                 genealogyListResult.add(genealogy);
             }
@@ -196,6 +210,7 @@ public class GenealogyServiceImpl implements GenealogyService  {
         genealogy.setDate(genealogyEntity.getDate());
         genealogy.setBranch(genealogyEntity.getBranch());
         genealogy.setOwner(genealogyEntity.getUserEntity().getFullname());
+        genealogy.setBranchList(BranchServiceImpl.parseListBranchEntityToListBranch(genealogyEntity.getBranchEntities()));
         return genealogy;
     }
 

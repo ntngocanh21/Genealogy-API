@@ -11,8 +11,8 @@ public class Genealogy {
     private Date date;
     private Integer branch;
     private String owner;
-    private List<Branch> branchList;
     private Integer role;
+    private List<Branch> branchList;
 
     public Genealogy() {
     }
