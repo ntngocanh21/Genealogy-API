@@ -210,7 +210,9 @@ public class GenealogyServiceImpl implements GenealogyService  {
         genealogy.setDate(genealogyEntity.getDate());
         genealogy.setBranch(genealogyEntity.getBranch());
         genealogy.setOwner(genealogyEntity.getUserEntity().getFullname());
-        genealogy.setBranchList(BranchServiceImpl.parseListBranchEntityToListBranch(genealogyEntity.getBranchEntities()));
+        if(genealogyEntity.getBranchEntities() != null){
+            genealogy.setBranchList(BranchServiceImpl.parseListBranchEntityToListBranch(genealogyEntity.getBranchEntities()));
+        }
         return genealogy;
     }
 
