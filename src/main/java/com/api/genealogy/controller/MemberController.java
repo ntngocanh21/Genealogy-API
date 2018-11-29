@@ -6,6 +6,7 @@ import com.api.genealogy.service.AndroidPushNotificationsServiceImpl;
 import com.api.genealogy.service.MemberService;
 import com.mysql.cj.log.Log;
 
+import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -40,12 +41,7 @@ public class MemberController {
      */
     @PostMapping("/member")
     public ResponseEntity getMemberOfBranch(@RequestBody UserBranchPermission userBranchPermission) {
-    	System.out.println("MemberController"
-    			+ "\n id: " + userBranchPermission.getId()
-    			+ "\n Username: " + userBranchPermission.getUsername()
-    			+ "\n Branch_id: " + userBranchPermission.getBranch_id()
-    			+ "\n Branch_id_permission: " + userBranchPermission.getBranch_permission_id());	
-    	
+    	String url_image = "https://api.androidhive.info/images/minion.jpg";
     	JSONObject body = new JSONObject();
 		try {
 			body.put("to", "/topics/" + TOPIC);
@@ -56,33 +52,19 @@ public class MemberController {
 			notification.put("body", "Happy Message!");
 			
 			JSONObject data = new JSONObject();
-			data.put("Key-1", "JSA Data 1");
-			data.put("Key-2", "JSA Data 2");
+			data.put("title", "Custom Message Firebase");
+			data.put("message", "Testing Again");
+			data.put("is_background", "true");
+			data.put("image", url_image);
+			data.put("timestamp", String.valueOf(new Date().getTime()));
 	 
 			body.put("notification", notification);
 			body.put("data", data);
 		} catch (JSONException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
  
-		/**
-			{
-			   "notification": {
-			      "title": "JSA Notification",
-			      "body": "Happy Message!"
-			   },
-			   "data": {
-			      "Key-1": "JSA Data 1",
-			      "Key-2": "JSA Data 2"
-			   },
-			   "to": "/topics/JavaSampleApproach",
-			   "priority": "high"
-			}
- 		*/
- 
 		HttpEntity<String> request = new HttpEntity<>(body.toString());
-	
  
 		CompletableFuture<String> pushNotification = androidPushNotificationsService.send(request);
 		CompletableFuture.allOf(pushNotification).join();
@@ -119,4 +101,5 @@ public class MemberController {
     public ResponseEntity joinBranch(@RequestBody UserBranchPermission userBranchPermission) {
         return new ResponseEntity<>(memberService.joinBranch(userBranchPermission), HttpStatus.OK);
     }
+    
 }
