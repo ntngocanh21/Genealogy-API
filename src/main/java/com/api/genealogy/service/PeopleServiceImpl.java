@@ -49,7 +49,7 @@ public class PeopleServiceImpl implements PeopleService  {
         PeopleEntity peopleEntity = parsePeopleToPeopleEntity(people);
         PeopleEntity newPeople = peopleRepository.save(peopleEntity);
 
-        BranchEntity branchEntity = branchRepository.findBranchEntityByIdOrderByName(people.getBranchId());
+        BranchEntity branchEntity = branchRepository.findBranchEntityById(people.getBranchId());
         branchEntity.setMember(branchEntity.getMember()+1);
         branchRepository.save(branchEntity);
 
@@ -70,7 +70,7 @@ public class PeopleServiceImpl implements PeopleService  {
         else {
             peopleRepository.deleteById(peopleId);
 
-            BranchEntity branchEntity = branchRepository.findBranchEntityByIdOrderByName(peopleEntity.getBranchEntity().getId());
+            BranchEntity branchEntity = branchRepository.findBranchEntityById(peopleEntity.getBranchEntity().getId());
             List<PeopleEntity> peopleEntityList = peopleRepository.findPeopleEntitiesByBranchEntity_IdOrderByLifeIndex(branchEntity.getId());
             branchEntity.setMember(peopleEntityList.size());
             branchRepository.save(branchEntity);
@@ -216,7 +216,7 @@ public class PeopleServiceImpl implements PeopleService  {
         peopleEntity.setImage(people.getImage());
         peopleEntity.setAddress(people.getAddress());
         peopleEntity.setBirthday(people.getBirthday());
-        peopleEntity.setBranchEntity(branchRepository.findBranchEntityByIdOrderByName(people.getBranchId()));
+        peopleEntity.setBranchEntity(branchRepository.findBranchEntityById(people.getBranchId()));
         peopleEntity.setDeathDay(people.getDeathDay());
         peopleEntity.setDegree(people.getDegree());
         peopleEntity.setDescription(people.getDescription());

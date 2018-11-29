@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface BranchRepository extends CrudRepository<BranchEntity, Integer> {
     List<BranchEntity> findBranchEntitiesByGenealogyEntity_IdOrderByName(Integer genealogyId);
-    BranchEntity findBranchEntityByIdOrderByName(Integer id);
+    BranchEntity findBranchEntityById(Integer id);
 }
 

@@ -35,54 +35,6 @@ public class SearchServiceImpl implements SearchService  {
     @Autowired
     private PeopleServiceImpl peopleService;
 
-    @Autowired
-    private BranchRepository branchRepository;
-
-//    @Override
-//    public GenealogyAndBranchResponse searchGenealogyByName(Search search, String username) {
-//        GenealogyAndBranchResponse genealogyAndBranchResponse = new GenealogyAndBranchResponse();
-//        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-//
-//        //search genealogy by name
-//        CriteriaQuery<GenealogyEntity> criteriaQueryGenealogy = criteriaBuilder.createQuery(GenealogyEntity.class);
-//        Root<GenealogyEntity> genealogyEntityRoot = criteriaQueryGenealogy.from(GenealogyEntity.class);
-//        CriteriaQuery<GenealogyEntity> selectG = criteriaQueryGenealogy.where(criteriaBuilder.like(genealogyEntityRoot.get("name"), "%" + search.getName() + "%"));
-//        selectG.orderBy(criteriaBuilder.asc(genealogyEntityRoot.get("name")));
-//        TypedQuery<GenealogyEntity> typedQueryG = entityManager.createQuery(selectG);
-//        List<GenealogyEntity> genealogyEntityListFound = typedQueryG.getResultList();
-//        List<Genealogy> genealogyListFound = genealogyService.parseListGenealogyEntityToListGenealogy(genealogyEntityListFound);
-//
-//        //search branch by name
-//        CriteriaQuery<BranchEntity> criteriaQueryBranch = criteriaBuilder.createQuery(BranchEntity.class);
-//        Root<BranchEntity> branchEntityRoot = criteriaQueryBranch.from(BranchEntity.class);
-//        CriteriaQuery<BranchEntity> selectB = criteriaQueryBranch.where(criteriaBuilder.like(branchEntityRoot.get("name"), "%" + search.getName() + "%"));
-//        selectB.orderBy(criteriaBuilder.asc(branchEntityRoot.get("name")));
-//        TypedQuery<BranchEntity> typedQueryB = entityManager.createQuery(selectB);
-//        List<BranchEntity> BranchEntityListFound = typedQueryB.getResultList();
-//        List<Branch> branchListFound = branchService.parseListBranchEntityToListBranch(BranchEntityListFound);
-//
-//        List<Genealogy> listGenealogyOfUser = genealogyService.getGenealogiesByUsername(username).getGenealogyList();
-//        List<Branch> listBranchListFound = new ArrayList<>();
-//        for(Genealogy genealogyFound : genealogyListFound){
-//            listBranchListFound.addAll(genealogyFound.getBranchList());
-//        }
-//        compareGenealogyList(genealogyListFound, listGenealogyOfUser);
-//
-//        List<Branch> listBranchOfUser = new ArrayList<>();
-//        for(Genealogy genealogy : listGenealogyOfUser){
-//            listBranchOfUser.addAll(genealogy.getBranchList());
-//        }
-//        compareBranchList(branchListFound, listBranchOfUser);
-//        compareBranchList(listBranchListFound, listBranchOfUser);
-//
-//        genealogyAndBranchResponse.setGenealogyList(genealogyListFound);
-//        genealogyAndBranchResponse.setBranchList(branchListFound);
-//        genealogyAndBranchResponse.setError(new MessageResponse(HTTPCodeResponse.SUCCESS,"Success"));
-//
-//        return genealogyAndBranchResponse;
-//    }
-
-
     @Override
     public GenealogyResponse searchGenealogyByName(Search search, String username) {
         GenealogyResponse genealogyResponse = new GenealogyResponse();
@@ -185,7 +137,7 @@ public class SearchServiceImpl implements SearchService  {
     }
 
     @Override
-    public PeopleResponse searchGenealogyByPeople(People people, String username) {
+    public PeopleResponse searchBranchByPeople(People people, String username) {
         PeopleResponse peopleResponse = new PeopleResponse();
 
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
