@@ -47,6 +47,10 @@ public class UserEntity {
     @Basic
     @Column(name = "birthday")
     private Date birthday;
+    
+    @Basic
+    @Column(name = "device_id")
+    private String deviceId;
 
     @OneToMany(mappedBy = "userBranchEntity", cascade=CascadeType.ALL)
     private List<UserBranchPermissionEntity> userBranchPermissionEntities;
@@ -149,5 +153,13 @@ public class UserEntity {
     public void setUserBranchPermissionEntities(List<UserBranchPermissionEntity> userBranchPermissionEntities) {
         this.userBranchPermissionEntities = userBranchPermissionEntities;
     }
+    
+    public String getDeviceId() {
+		return deviceId;
+	}
+    
+    public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
+	}
 }
 

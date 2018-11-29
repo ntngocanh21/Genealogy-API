@@ -1,12 +1,8 @@
 package com.api.genealogy.service;
 
 import com.api.genealogy.constant.HTTPCodeResponse;
-import com.api.genealogy.entity.UserBranchPermissionEntity;
 import com.api.genealogy.entity.UserEntity;
-import com.api.genealogy.model.Genealogy;
 import com.api.genealogy.model.User;
-import com.api.genealogy.model.UserBranchPermission;
-import com.api.genealogy.repository.UserBranchPermissionRepository;
 import com.api.genealogy.repository.UserRepository;
 import com.api.genealogy.security.JwtGenerator;
 import com.api.genealogy.service.response.LoginResponse;
@@ -118,6 +114,7 @@ public class UserServiceImpl implements UserService {
         user.setBirthday(userEntity.getBirthday());
         user.setGender(userEntity.getGender());
         user.setMail(userEntity.getMail());
+        user.setDeviceId(userEntity.getDeviceId());
         return user;
     }
 
@@ -128,6 +125,26 @@ public class UserServiceImpl implements UserService {
         userEntity.setBirthday(user.getBirthday());
         userEntity.setGender(user.getGender());
         userEntity.setMail(user.getMail());
+        userEntity.setDeviceId(user.getDeviceId());
         return userEntity;
     }
+
+	@Override
+	public void updateDeviceId(String deviceId, String username) {
+        try {
+        	userRepository.updateDeviceId(deviceId, username);
+        } catch (Exception ex) {
+        	ex.printStackTrace();
+        }
+	}
+
+	@Override
+	public String getDeviceIdFromUsername(String username) {
+		try {
+			return userRepository.findUserEntityByUsername(username).getDeviceId();
+        } catch (Exception ex) {
+        	ex.printStackTrace();
+        }
+		return "";
+	}
 }

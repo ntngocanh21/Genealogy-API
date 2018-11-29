@@ -16,12 +16,13 @@ public class User {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", timezone="Asia/Ho_Chi_Minh")
     private Date birthday;
     private Integer role;
+    private String deviceId;
 
 
     public User() {
     }
 
-    public User(Integer id, String username, String password, String mail, String fullname, Boolean gender, String address, String avatar, Date birthday, Date createdDate, Date lastUpdated, Integer role) {
+    public User(Integer id, String username, String password, String mail, String fullname, Boolean gender, String address, String avatar, Date birthday, Date createdDate, Date lastUpdated, Integer role, String deviceId) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -32,6 +33,7 @@ public class User {
         this.avatar = avatar;
         this.birthday = birthday;
         this.role = role;
+        this.deviceId = deviceId;
     }
 
     public Integer getRole() {
@@ -113,5 +115,13 @@ public class User {
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
+    
+    public String getDeviceId() {
+		return deviceId;
+	}
+    
+    public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
+	}
 
 }

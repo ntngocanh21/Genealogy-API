@@ -10,4 +10,6 @@ public interface UserService {
     LoginResponse register(User user);
     UserResponse getProfile(String currentUserName);
     UserResponse editProfile(String currentUserName, User user);
+	String getDeviceIdFromUsername(String username);
+	void updateDeviceId(String deviceId, String userName);
 }
