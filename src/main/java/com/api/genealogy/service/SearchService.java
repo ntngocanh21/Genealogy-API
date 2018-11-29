@@ -9,5 +9,5 @@ import com.api.genealogy.service.response.PeopleResponse;
 public interface SearchService {
     GenealogyResponse searchGenealogyByName(Search search, String username);
     BranchResponse searchBranchByName(Search search, String username);
-    PeopleResponse searchGenealogyByPeople(People people, String username);
+    PeopleResponse searchBranchByPeople(People people, String username);
 }

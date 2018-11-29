@@ -40,9 +40,14 @@ public class BranchController {
 
     @PostMapping("/branch/genealogy")
     public ResponseEntity getBranchesByGenealogyId(@RequestBody int genealogyId) {
+        return new ResponseEntity<>(branchService.getBranchesByGenealogyId(genealogyId), HttpStatus.OK);
+    }
+
+    @PostMapping("/branch/id")
+    public ResponseEntity getBranchesByBranchId(@RequestBody int branchId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserName = authentication.getName();
-        return new ResponseEntity<>(branchService.getBranchesByGenealogyId(genealogyId), HttpStatus.OK);
+        return new ResponseEntity<>(branchService.getBranchesByBranchId(currentUserName, branchId), HttpStatus.OK);
     }
 
 }

@@ -35,6 +35,6 @@ public class SearchController {
     public ResponseEntity searchBranchByPeople(@RequestBody People people) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserName = authentication.getName();
-        return new ResponseEntity<>(searchService.searchGenealogyByPeople(people, currentUserName), HttpStatus.OK);
+        return new ResponseEntity<>(searchService.searchBranchByPeople(people, currentUserName), HttpStatus.OK);
     }
 }

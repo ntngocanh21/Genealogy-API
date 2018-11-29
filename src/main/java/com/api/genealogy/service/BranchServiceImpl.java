@@ -7,7 +7,7 @@ import com.api.genealogy.entity.GenealogyEntity;
 import com.api.genealogy.entity.UserBranchPermissionEntity;
 import com.api.genealogy.entity.UserEntity;
 import com.api.genealogy.model.Branch;
-import com.api.genealogy.model.UserBranchPermission;
+import com.api.genealogy.model.Genealogy;
 import com.api.genealogy.repository.*;
 import com.api.genealogy.service.response.BranchResponse;
 import com.api.genealogy.service.response.CodeResponse;
@@ -37,11 +37,34 @@ public class BranchServiceImpl implements BranchService  {
     @Autowired
     private UserBranchPermissionRepository userBranchPermissionRepository;
 
+    @Autowired
+    private GenealogyService genealogyService;
+
     @Override
     public BranchResponse getBranchesByGenealogyId(Integer genealogyId) {
         List<BranchEntity> branchEntities = (List<BranchEntity>) branchRepository
                 .findBranchEntitiesByGenealogyEntity_IdOrderByName(genealogyId);
         List<Branch> branches = parseListBranchEntityToListBranch(branchEntities);
+        MessageResponse messageResponse = new MessageResponse(0,"Success");
+        BranchResponse branchResponse = new BranchResponse(messageResponse, branches);
+        return branchResponse;
+    }
+
+    @Override
+    public BranchResponse getBranchesByBranchId(String username, Integer branchId) {
+        BranchEntity branchEntity = branchRepository
+                .findBranchEntityById(branchId);
+        List<BranchEntity> branchEntities = new ArrayList<>();
+        branchEntities.add(branchEntity);
+        List<Branch> branches = parseListBranchEntityToListBranch(branchEntities);
+
+        List<Genealogy> listGenealogyOfUser = genealogyService.getGenealogiesByUsername(username).getGenealogyList();
+        List<Branch> listBranchOfUser = new ArrayList<>();
+        for(Genealogy genealogy : listGenealogyOfUser){
+            listBranchOfUser.addAll(genealogy.getBranchList());
+        }
+        SearchServiceImpl.compareBranchList(branches, listBranchOfUser);
+
         MessageResponse messageResponse = new MessageResponse(0,"Success");
         BranchResponse branchResponse = new BranchResponse(messageResponse, branches);
         return branchResponse;
@@ -87,7 +110,7 @@ public class BranchServiceImpl implements BranchService  {
     public CodeResponse deleteBranch(String username, Integer branchId) {
         CodeResponse codeResponse = new CodeResponse();
         UserEntity userEntity = userRepository.findUserEntityByUsername(username);
-        BranchEntity branchEntity = branchRepository.findBranchEntityByIdOrderByName(branchId);
+        BranchEntity branchEntity = branchRepository.findBranchEntityById(branchId);
         if (branchEntity == null){
             codeResponse.setError(new MessageResponse(HTTPCodeResponse.OBJECT_NOT_FOUND,"No branch found"));
         }
@@ -110,7 +133,7 @@ public class BranchServiceImpl implements BranchService  {
     public CodeResponse updateBranch(String username, Branch branch) {
         CodeResponse codeResponse = new CodeResponse();
         UserEntity userEntity = userRepository.findUserEntityByUsername(username);
-        BranchEntity branchEntity = branchRepository.findBranchEntityByIdOrderByName(branch.getId());
+        BranchEntity branchEntity = branchRepository.findBranchEntityById(branch.getId());
         if (branchEntity == null){
             codeResponse.setError(new MessageResponse(HTTPCodeResponse.OBJECT_NOT_FOUND,"No branch found"));
         }
