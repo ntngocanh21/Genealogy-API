@@ -36,6 +36,9 @@ public class UserServiceImpl implements UserService {
             if (BCrypt.checkpw(user.getPassword(), userEntity.getPassword())) {
                 messageResponse.setCode(HTTPCodeResponse.SUCCESS);
                 messageResponse.setDescription("Success");
+                userEntity.setDeviceId(user.getDeviceId());
+                userRepository.save(userEntity);
+//                userService.updateDeviceId(user.getDeviceId(), user.getUsername());
                 return new LoginResponse(messageResponse, jwtGenerator.generate(userEntity), userEntity.getAvatar(), userEntity.getFullname());
             }
             else{

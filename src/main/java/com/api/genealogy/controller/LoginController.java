@@ -18,7 +18,6 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody User user) {
-    	userService.updateDeviceId(user.getDeviceId(), user.getUsername());
         return new ResponseEntity<>(userService.login(user), HttpStatus.OK);
     }
 }
