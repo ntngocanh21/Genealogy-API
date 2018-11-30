@@ -92,6 +92,7 @@ public class GenealogyServiceImpl implements GenealogyService  {
     private List<Genealogy> findGenealogyByUsernameAndRole(String username, int role, List<Genealogy> genealogyListResult){
         UserEntity user = userRepository.findUserEntityByUsername(username);
         //find branch user had mod/member role
+        //tìm record trong userBranchPermission có role nhập vào(mod/member) status true, và của user request.
         List<UserBranchPermissionEntity> userBranchPermissionEntities = userBranchPermissionRepository
                 .findUserBranchPermissionEntitiesByBranchPermissionEntityAndStatusAndUserBranchEntity(
                         branchPermissionRepository.findBranchPermissionEntityById(role),true, user);
@@ -106,6 +107,7 @@ public class GenealogyServiceImpl implements GenealogyService  {
                     for (Genealogy genealogy : genealogyListResult) {
                         //if genealogy of branch == genelogy in resultList
                         if (genealogyEntity.getId() == genealogy.getId()) {
+                            // có gia phả đó rồi thì set true
                             checkGenealogyInList = true;
                             List<Branch> branchList = genealogy.getBranchList();
                             Branch branch = BranchServiceImpl.parseBranchEntityToBranch(userBranchPermissionEntity.getBranchUserEntity());
@@ -113,6 +115,7 @@ public class GenealogyServiceImpl implements GenealogyService  {
                             branchList.add(branch);
                             genealogy.setBranchList(branchList);
                             genealogy.setRole(GenealogyBranchRole.MEMBER);
+                            break;
                         } else {
                             checkGenealogyInList = false;
                         }
@@ -127,6 +130,17 @@ public class GenealogyServiceImpl implements GenealogyService  {
             }
         }
         return genealogyListResult;
+    }
+
+    private void addGenealogyToResult(GenealogyEntity genealogyEntity, List<Genealogy> genealogyListResult, int role, UserBranchPermissionEntity userBranchPermissionEntity){
+        Genealogy genealogy = parseGenealogyEntityToGenealogy(genealogyEntity);
+        List<Branch> branchList = new ArrayList<>();
+        Branch branch = BranchServiceImpl.parseBranchEntityToBranch(userBranchPermissionEntity.getBranchUserEntity());
+        branch.setRole(role);
+        branchList.add(branch);
+        genealogy.setBranchList(branchList);
+        genealogy.setRole(GenealogyBranchRole.MEMBER);
+        genealogyListResult.add(genealogy);
     }
 
     @Override
@@ -148,16 +162,6 @@ public class GenealogyServiceImpl implements GenealogyService  {
         genealogyResponse.setError(new MessageResponse(HTTPCodeResponse.SUCCESS,"Success"));
         genealogyResponse.setGenealogyList(genealogies);
         return genealogyResponse;
-    }
-
-    private void addGenealogyToResult(GenealogyEntity genealogyEntity, List<Genealogy> genealogyListResult, int role, UserBranchPermissionEntity userBranchPermissionEntity){
-        Genealogy genealogy = parseGenealogyEntityToGenealogy(genealogyEntity);
-        List<Branch> branchList = new ArrayList<>();
-        Branch branch = BranchServiceImpl.parseBranchEntityToBranch(userBranchPermissionEntity.getBranchUserEntity());
-        branch.setRole(role);
-        branchList.add(branch);
-        genealogy.setBranchList(branchList);
-        genealogyListResult.add(genealogy);
     }
 
     @Override
