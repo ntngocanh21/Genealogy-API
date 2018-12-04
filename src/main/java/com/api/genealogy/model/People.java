@@ -24,6 +24,7 @@ public class People {
     private String description;
     private Integer lifeIndex;
     public Integer parentId;
+    public Integer partnerId;
     public String appellation;
 
     public String getAppellation() {
@@ -138,4 +139,11 @@ public class People {
         this.parentId = parentId;
     }
 
+    public Integer getPartnerId() {
+        return partnerId;
+    }
+
+    public void setPartnerId(Integer partnerId) {
+        this.partnerId = partnerId;
+    }
 }

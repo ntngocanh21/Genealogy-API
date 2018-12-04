@@ -227,6 +227,9 @@ public class PeopleServiceImpl implements PeopleService  {
         if(people.getParentId() != null){
             peopleEntity.setParentEntity(peopleRepository.findPeopleEntityById(people.getParentId()));
         }
+        if(people.getPartnerId() != null){
+            peopleEntity.setPartnerEntity(peopleRepository.findPeopleEntityById(people.getPartnerId()));
+        }
         return peopleEntity;
     }
 
@@ -246,6 +249,9 @@ public class PeopleServiceImpl implements PeopleService  {
         people.setNickname(peopleEntity.getNickname());
         if(peopleEntity.getParentEntity()!= null){
             people.setParentId(peopleEntity.getParentEntity().getId());
+        }
+        if(peopleEntity.getPartnerEntity()!= null){
+            people.setPartnerId(peopleEntity.getPartnerEntity().getId());
         }
         return people;
     }

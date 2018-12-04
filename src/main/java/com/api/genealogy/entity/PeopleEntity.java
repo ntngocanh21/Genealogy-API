@@ -62,6 +62,13 @@ public class PeopleEntity {
     @JoinColumn(name = "parent_id", nullable = true)
     public PeopleEntity parentEntity;
 
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name = "partner_id", nullable = true)
+    private PeopleEntity partnerEntity;
+
+    @OneToOne(mappedBy = "partnerEntity")
+    private PeopleEntity people;
+
     public Integer getId() {
         return id;
     }
@@ -173,4 +180,13 @@ public class PeopleEntity {
     public void setParentEntity(PeopleEntity parentEntity) {
         this.parentEntity = parentEntity;
     }
+
+    public PeopleEntity getPartnerEntity() {
+        return partnerEntity;
+    }
+
+    public void setPartnerEntity(PeopleEntity partnerEntity) {
+        this.partnerEntity = partnerEntity;
+    }
+
 }
