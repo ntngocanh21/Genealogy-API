@@ -158,6 +158,21 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public CodeResponse outBranch(UserBranchPermission userBranchPermission) {
+        CodeResponse codeResponse = new CodeResponse();
+        UserBranchPermissionEntity userBranchPermissionEntity = userBranchPermissionRepository
+                .findUserBranchPermissionEntitiesByUserBranchEntity_UsernameAndBranchUserEntity_Id
+                (userBranchPermission.getUsername(), userBranchPermission.getBranch_id());
+        if(userBranchPermissionEntity != null){
+            userBranchPermissionRepository.deleteById(userBranchPermissionEntity.getId());
+            codeResponse.setError(new MessageResponse(HTTPCodeResponse.SUCCESS,"Success"));
+        } else {
+            codeResponse.setError(new MessageResponse(HTTPCodeResponse.OBJECT_NOT_FOUND,"False"));
+        }
+        return codeResponse;
+    }
+
+    @Override
     public CodeResponse changeRoleMemberOfBranch(UserBranchPermission member) {
         CodeResponse codeResponse = new CodeResponse();
         UserBranchPermissionEntity userBranchPermissionEntity = userBranchPermissionRepository

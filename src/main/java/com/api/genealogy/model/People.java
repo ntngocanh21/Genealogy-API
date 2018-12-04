@@ -137,4 +137,5 @@ public class People {
     public void setParentId(Integer parentId) {
         this.parentId = parentId;
     }
+
 }
