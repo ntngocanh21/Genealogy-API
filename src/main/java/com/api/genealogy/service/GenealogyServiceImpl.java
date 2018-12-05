@@ -82,6 +82,7 @@ public class GenealogyServiceImpl implements GenealogyService  {
 
         genealogyListResult = findGenealogyByUsernameAndRole(username, GenealogyBranchRole.MOD, genealogyListResult);
         genealogyListResult = findGenealogyByUsernameAndRole(username, GenealogyBranchRole.MEMBER, genealogyListResult);
+        genealogyListResult = findGenealogyByUsernameAndRole(username, GenealogyBranchRole.WAITING, genealogyListResult);
 
         MessageResponse messageResponse = new MessageResponse(0,"Success");
         GenealogyResponse genealogyResponse = new GenealogyResponse(messageResponse, genealogyListResult);
@@ -93,9 +94,16 @@ public class GenealogyServiceImpl implements GenealogyService  {
         UserEntity user = userRepository.findUserEntityByUsername(username);
         //find branch user had mod/member role
         //tìm record trong userBranchPermission có role nhập vào(mod/member) status true, và của user request.
-        List<UserBranchPermissionEntity> userBranchPermissionEntities = userBranchPermissionRepository
-                .findUserBranchPermissionEntitiesByBranchPermissionEntityAndStatusAndUserBranchEntity(
-                        branchPermissionRepository.findBranchPermissionEntityById(role),true, user);
+        List<UserBranchPermissionEntity> userBranchPermissionEntities = new ArrayList<>();
+        if(role == GenealogyBranchRole.WAITING){
+            userBranchPermissionEntities = userBranchPermissionRepository
+                    .findUserBranchPermissionEntitiesByBranchPermissionEntityAndStatusAndUserBranchEntity(
+                            branchPermissionRepository.findBranchPermissionEntityById(GenealogyBranchRole.MEMBER),false, user);
+        } else {
+            userBranchPermissionEntities = userBranchPermissionRepository
+                    .findUserBranchPermissionEntitiesByBranchPermissionEntityAndStatusAndUserBranchEntity(
+                            branchPermissionRepository.findBranchPermissionEntityById(role),true, user);
+        }
 
         if (!userBranchPermissionEntities.isEmpty()) {
             for (UserBranchPermissionEntity userBranchPermissionEntity : userBranchPermissionEntities){

@@ -9,6 +9,5 @@ public interface PeopleService {
     PeopleResponse createPeople(String username, People people);
     CodeResponse deletePeople(String username, Integer peopleId);
     CodeResponse updatePeople(String username, People people);
-
     PeopleResponse getFamilyRelation(int peopleId);
 }
