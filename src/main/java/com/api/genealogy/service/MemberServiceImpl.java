@@ -21,9 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -38,9 +36,6 @@ public class MemberServiceImpl implements MemberService {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private NotificationService notificationService;
@@ -96,40 +91,23 @@ public class MemberServiceImpl implements MemberService {
         BranchEntity branchEntity = branchRepository.findBranchEntityById(userBranchPermission.getBranch_id());
         UserBranchPermissionEntity userBranchPermissionEntity = new UserBranchPermissionEntity(false, branchEntity, userEntity, branchPermissionRepository.findBranchPermissionEntityById(userBranchPermission.getBranch_permission_id()));
         userBranchPermissionRepository.save(userBranchPermissionEntity);
-
-        // Định nghĩa nội dung gửi đi
+        
         JSONObject body = new JSONObject();
         Notification item = new Notification();
         item.setTitle("Member Request Join Branch");
         item.setType(PushNotificateionType.MEMBER_JOIN);
         item.setContent(userEntity.getFullname() + "joined in" + branchEntity.getName() + " of " + branchEntity.getGenealogyEntity().getName() + "Please approve request from Genealogy application");
-        /** Lấy deviceId của chủ branch => bắn về */
-
-
         item.setDeviceId(branchEntity.getGenealogyEntity().getUserEntity().getDeviceId());
-        // Tạm thời bỏ qua; Giá trị mặc định 0, nhận tự update 1
-//    	item.setIsPushed(0);
-        // Biết chính xác thằng nào request lên.
         item.setUsername(userEntity.getUsername());
-        // Lưu vào DB
-        // Đưa message lên Firebase
         notificationService.addNotification(item);
         try {
             body.put("to", "/topics/" + TOPIC);
             body.put("priority", "high");
 
-            // Chạy nền cái app sẻ hiện ra
             JSONObject notification = new JSONObject();
             notification.put("title", item.getTitle());
             notification.put("body", item.getContent());
-
-            // Không chạy nền
             JSONObject data = new JSONObject();
-            data.put("title", "Custom Message Firebase");
-            data.put("message", "Testing Again");
-            data.put("image", "https://api.androidhive.info/images/minion.jpg");
-            data.put("timestamp", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-
             body.put("notification", notification);
             body.put("data", data);
         } catch (JSONException e1) {
@@ -150,7 +128,6 @@ public class MemberServiceImpl implements MemberService {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-
 
         CodeResponse codeResponse = new CodeResponse();
         codeResponse.setError(new MessageResponse(HTTPCodeResponse.SUCCESS,"Success"));
