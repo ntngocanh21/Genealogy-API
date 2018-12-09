@@ -98,10 +98,10 @@ public class MemberServiceImpl implements MemberService {
         item.setType(PushNotificateionType.MEMBER_JOIN);
         item.setContent(userEntity.getFullname() + "joined in" + branchEntity.getName() + " of " + branchEntity.getGenealogyEntity().getName() + "Please approve request from Genealogy application");
         item.setDeviceId(branchEntity.getGenealogyEntity().getUserEntity().getDeviceId());
-        item.setUsername(userEntity.getUsername());
+        item.setUsername(branchEntity.getGenealogyEntity().getUserEntity().getUsername());
         notificationService.addNotification(item);
         try {
-            body.put("to", "/topics/" + TOPIC);
+            body.put("to", "/topics/" + branchEntity.getGenealogyEntity().getUserEntity().getDeviceId());
             body.put("priority", "high");
 
             JSONObject notification = new JSONObject();
