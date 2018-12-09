@@ -62,11 +62,11 @@ public class PeopleEntity {
     @JoinColumn(name = "parent_id", nullable = true)
     public PeopleEntity parentEntity;
 
-    @OneToOne(cascade=CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "partner_id", nullable = true)
     private PeopleEntity partnerEntity;
 
-    @OneToOne(mappedBy = "partnerEntity")
+    @OneToOne(mappedBy = "partnerEntity", cascade=CascadeType.ALL)
     private PeopleEntity people;
 
     public Integer getId() {
