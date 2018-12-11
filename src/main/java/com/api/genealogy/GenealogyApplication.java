@@ -1,24 +1,27 @@
 package com.api.genealogy;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
+
+import com.api.genealogy.scheduler.DeathAnniversarySchedule;
 
 @SpringBootApplication
 @EnableScheduling
 public class GenealogyApplication {
-
+	
+	@Bean
+    public TaskScheduler taskScheduler() {
+        return new ConcurrentTaskScheduler();
+    }
+	
     public static void main(String[] args) {
-        SpringApplication.run(GenealogyApplication.class, args);
+    	ApplicationContext ctx = SpringApplication.run(GenealogyApplication.class, args);
+        DeathAnniversarySchedule deathAnniversaryTask = ctx.getBean(DeathAnniversarySchedule.class);
+        deathAnniversaryTask.scheduleAllCrons();
     }
-    
-    @Scheduled(fixedRate = 2000)
-    public void scheduleTaskWithFixedRate() {
-        System.out.println("Fixed Rate Task: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()));
-    }
-
 }

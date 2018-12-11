@@ -258,4 +258,14 @@ public class PeopleServiceImpl implements PeopleService  {
         }
         return peopleList;
     }
+
+	@Override
+	public PeopleResponse getAllPeopleFromSystem() {
+		List<PeopleEntity> peopleEntities = (List<PeopleEntity>) peopleRepository
+                .getAllPeopleFromSystem();
+        List<People> peopleList = parseListPeopleEntityToListPeople(peopleEntities);
+        MessageResponse messageResponse = new MessageResponse(0,"Success");
+        PeopleResponse peopleResponse = new PeopleResponse(messageResponse, peopleList);
+        return peopleResponse;
+	}
 }

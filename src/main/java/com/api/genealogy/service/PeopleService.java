@@ -11,4 +11,6 @@ public interface PeopleService {
     CodeResponse updatePeople(String username, People people);
 
     PeopleResponse getFamilyRelation(int peopleId);
+    PeopleResponse getAllPeopleFromSystem();
+    
 }
