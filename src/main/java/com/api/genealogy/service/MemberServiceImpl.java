@@ -29,8 +29,6 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class MemberServiceImpl implements MemberService {
 
-    private final String TOPIC = "JavaSampleApproach";
-
     @Autowired
     private BranchRepository branchRepository;
 
@@ -82,6 +80,43 @@ public class MemberServiceImpl implements MemberService {
         userBranchPermissionRepository.save(userBranchPermissionEntity);
         codeResponse.setError(new MessageResponse(HTTPCodeResponse.SUCCESS,"Success"));
 
+        JSONObject body = new JSONObject();
+        Notification item = new Notification();
+        item.setTitle("Your request join branch has been accepted");
+        item.setType(PushNotificateionType.MEMBER_JOIN);
+        item.setContent("Your request join branch " + branchRepository.findBranchEntityById(member.getBranch_id()).getName() + " has been accepted");
+        item.setDeviceId(userRepository.findUserEntityByUsername(member.getUsername()).getDeviceId());
+        item.setUsername(member.getUsername());
+        notificationService.addNotification(item);
+        try {
+            body.put("to", "/topics/" + item.getDeviceId());
+            body.put("priority", "high");
+
+            JSONObject notification = new JSONObject();
+            notification.put("title", item.getTitle());
+            notification.put("body", item.getContent());
+            JSONObject data = new JSONObject();
+            body.put("notification", notification);
+            body.put("data", data);
+        } catch (JSONException e1) {
+            e1.printStackTrace();
+        }
+
+        HttpEntity<String> request = new HttpEntity<>(body.toString());
+
+        CompletableFuture<String> pushNotification = androidPushNotificationsService.send(request);
+        CompletableFuture.allOf(pushNotification).join();
+
+        try {
+            String firebaseResponse = pushNotification.get();
+            System.out.println("Firebase response"
+                    + "\n Response: " + firebaseResponse);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
         return codeResponse;
     }
 
@@ -91,12 +126,12 @@ public class MemberServiceImpl implements MemberService {
         BranchEntity branchEntity = branchRepository.findBranchEntityById(userBranchPermission.getBranch_id());
         UserBranchPermissionEntity userBranchPermissionEntity = new UserBranchPermissionEntity(false, branchEntity, userEntity, branchPermissionRepository.findBranchPermissionEntityById(userBranchPermission.getBranch_permission_id()));
         userBranchPermissionRepository.save(userBranchPermissionEntity);
-        
+
         JSONObject body = new JSONObject();
         Notification item = new Notification();
         item.setTitle("Member Request Join Branch");
         item.setType(PushNotificateionType.MEMBER_JOIN);
-        item.setContent(userEntity.getFullname() + "joined in" + branchEntity.getName() + " of " + branchEntity.getGenealogyEntity().getName() + "Please approve request from Genealogy application");
+        item.setContent(userEntity.getFullname() + " joined in " + branchEntity.getName() + " of " + branchEntity.getGenealogyEntity().getName() + "Please approve request from Genealogy application");
         item.setDeviceId(branchEntity.getGenealogyEntity().getUserEntity().getDeviceId());
         item.setUsername(branchEntity.getGenealogyEntity().getUserEntity().getUsername());
         notificationService.addNotification(item);
