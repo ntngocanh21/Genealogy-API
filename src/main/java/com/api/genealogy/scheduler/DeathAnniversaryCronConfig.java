@@ -29,7 +29,6 @@ public class DeathAnniversaryCronConfig {
 		schedules = getDateSchedulerFromDatabase(peopleService.getAllPeopleFromSystem().getPeopleList());
 	}
 	
-	
 	/**
 	 * Read cron-job here: http://www.quartz-scheduler.org/documentation/quartz-2.x/tutorials/crontrigger.html
 	 * *  .  *  .  *  .  *  .  *  .  *  
@@ -64,9 +63,7 @@ public class DeathAnniversaryCronConfig {
         } else {
         	day = day - 5;
         }
-        // Dummy
-        return "00 04 14 * * ?";
-//		return "0 0 8 "+day+" "+month+" ?";
+		return "15 57 1 "+day+" "+month+" ?";
 	}
 
 	@Bean

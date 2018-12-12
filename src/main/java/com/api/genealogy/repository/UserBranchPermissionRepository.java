@@ -4,7 +4,11 @@ package com.api.genealogy.repository;
 import com.api.genealogy.entity.BranchPermissionEntity;
 import com.api.genealogy.entity.UserBranchPermissionEntity;
 import com.api.genealogy.entity.UserEntity;
+
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,4 +16,7 @@ public interface UserBranchPermissionRepository extends CrudRepository<UserBranc
     List<UserBranchPermissionEntity> findUserBranchPermissionEntitiesByBranchUserEntity_IdAndStatus(Integer branchId, boolean status);
     UserBranchPermissionEntity findUserBranchPermissionEntitiesByUserBranchEntity_UsernameAndBranchUserEntity_Id(String username, int branchId);
     List<UserBranchPermissionEntity> findUserBranchPermissionEntitiesByBranchPermissionEntityAndStatusAndUserBranchEntity(BranchPermissionEntity branchPermissionEntity, boolean status, UserEntity userEntity);
+    @Transactional
+    @Query("SELECT u.branchUserEntity.id FROM UserBranchPermissionEntity u WHERE u.userBranchEntity.id = :user_id")
+    Integer findBranchPermissionIdByUserId(@Param("user_id") Integer user_id);
 };
