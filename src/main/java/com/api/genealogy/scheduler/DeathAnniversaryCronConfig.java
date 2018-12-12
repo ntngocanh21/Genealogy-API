@@ -63,7 +63,7 @@ public class DeathAnniversaryCronConfig {
         } else {
         	day = day - 5;
         }
-		return "15 57 1 "+day+" "+month+" ?";
+		return "10 06 18 "+day+" "+month+" ?";
 	}
 
 	@Bean

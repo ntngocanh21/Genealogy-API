@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface UserRepository extends CrudRepository<UserEntity, Integer> {
     UserEntity findUserEntityByUsername(String username);
-    
     @Transactional
     @Modifying
     @Query("UPDATE UserEntity u SET u.deviceId = :deviceId WHERE u.username = :username")

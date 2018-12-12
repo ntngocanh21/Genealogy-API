@@ -1,12 +1,18 @@
 package com.api.genealogy.scheduler;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import com.api.genealogy.entity.UserBranchPermissionEntity;
+import com.api.genealogy.entity.UserEntity;
+import com.api.genealogy.model.UserBranchPermission;
+import com.api.genealogy.repository.UserBranchPermissionRepository;
+import com.api.genealogy.repository.UserRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,17 +37,20 @@ public class DeathAnniversaryTask implements Runnable {
 	
 	@Autowired
     private AndroidPushNotificationsService androidPushNotificationsService;
-	
+
+    @Autowired
+    private UserBranchPermissionRepository userBranchPermissionRepository;
+
     @Override
     public void run() {
     	List<People> peopleList = peopleService.getAllPeopleFromSystem().getPeopleList();
     	for(int index = 0; index < peopleList.size(); index++) {
         	if (peopleList.get(index).getDeathDay() != null)
-        		validateTime(peopleList.get(index).getBranchId(), peopleList.get(index).getDeathDay());	
+        		validateTime(peopleList.get(index), peopleList.get(index).getDeathDay());
         }
     }
     
-    private void validateTime(Integer branchId, Date dealth) {
+    private void validateTime(People people, Date dealth) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(dealth);
         int day = cal.get(Calendar.DATE);
@@ -59,20 +68,25 @@ public class DeathAnniversaryTask implements Runnable {
         currentTime.setTime(new Date());
         int day1 = currentTime.get(Calendar.DATE);
         int month1 = currentTime.get(Calendar.MONTH) + 1;
-        
+
+        List<UserEntity> arrPeople = new ArrayList<>();
         if (day == day1 && month == month1) {
-        	List<People> arrPeople = peopleService.getPeopleByBranchId(branchId).getPeopleList();
+            List<UserBranchPermissionEntity>  arr = userBranchPermissionRepository.findUserBranchPermissionEntitiesByBranchUserEntity_IdAndStatus(people.getBranchId(), true);
+            for(UserBranchPermissionEntity userBranchPermissionEntity : arr){
+                arrPeople.add(userBranchPermissionEntity.getUserBranchEntity());
+            }
+
         	for (int index = 0; index < arrPeople.size(); index++) {
         		JSONObject body = new JSONObject();
                 Notification item = new Notification();
                 item.setTitle("Dealth Aniverssary");
                 item.setType(PushNotificateionType.DEATH_ANNIVERSARY);
-                item.setContent("You are going to have Dealth aniverssary of "+arrPeople.get(index).getName()+" Please arrange your time.");
-                item.setDeviceId(branchId+"Branch");
+                item.setContent("You are going to have Dealth aniverssary of "+people.getName()+" Please arrange your time.");
+                item.setDeviceId(arrPeople.get(index).getDeviceId());
                 item.setUsername("System");
                 notificationService.addNotification(item);
                 try {
-                    body.put("to", "/topics/" + branchId+"Branch");
+                    body.put("to", "/topics/" + arrPeople.get(index).getDeviceId());
                     body.put("priority", "high");
 
                     JSONObject notification = new JSONObject();
