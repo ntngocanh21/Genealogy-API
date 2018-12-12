@@ -16,39 +16,30 @@ public class PeopleEntity {
     @JoinColumn(name = "branch_id", nullable = false)
     public BranchEntity branchEntity;
 
-    @Basic
     @Column(name = "name")
     private String name;
 
-    @Basic
     @Column(name = "nickname")
     private String nickname;
 
-    @Basic
     @Column(name = "birthday")
     private Date birthday;
 
-    @Basic
     @Column(name = "gender")
     private int gender;
 
-    @Basic
     @Column(name = "address")
     private String address;
 
-    @Basic
     @Column(name = "death_day")
     private Date deathDay;
 
-    @Basic
     @Column(name = "image")
     private String image;
 
-    @Basic
     @Column(name = "degree")
     private String degree;
 
-    @Basic
     @Column(name = "description", columnDefinition="TEXT")
     private String description;
 

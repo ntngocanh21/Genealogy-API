@@ -12,19 +12,15 @@ public class BranchEntity {
     @Column(name = "id")
     private Integer id;
 
-    @Basic
     @Column(name = "name")
     private String name;
 
-    @Basic
     @Column(name = "description", columnDefinition="TEXT")
     private String description;
 
-    @Basic
     @Column(name = "date")
     private Date date;
 
-    @Basic
     @Column(name = "member")
     private Integer member;
 
@@ -37,6 +33,9 @@ public class BranchEntity {
 
     @OneToMany(mappedBy = "branchUserEntity", cascade=CascadeType.ALL)
     private List<UserBranchPermissionEntity> userBranchPermissionEntities;
+
+    @OneToMany(mappedBy = "branchEventEntity", cascade=CascadeType.ALL)
+    private List<EventEntity> eventEntities;
 
     public Integer getId() {
         return id;
@@ -100,6 +99,14 @@ public class BranchEntity {
 
     public void setUserBranchPermissionEntities(List<UserBranchPermissionEntity> userBranchPermissionEntities) {
         this.userBranchPermissionEntities = userBranchPermissionEntities;
+    }
+
+    public List<EventEntity> getEventEntities() {
+        return eventEntities;
+    }
+
+    public void setEventEntities(List<EventEntity> eventEntities) {
+        this.eventEntities = eventEntities;
     }
 }
 

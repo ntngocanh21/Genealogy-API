@@ -17,27 +17,21 @@ public class NotificationEntity {
     @Column(name = "id")
     private Integer id;
 
-    @Basic
     @Column(name = "title")
     private String title;
 
-    @Basic
     @Column(name = "type")
     private String type;
 
-    @Basic
     @Column(name = "content")
     private String content;
     
-    @Basic
     @Column(name = "device_id")
     private String deviceId;
     
-    @Basic
     @Column(name = "is_pushed")
     private Integer isPushed;
     
-    @Basic
     @Column(name = "username")
     private String username;
 
