@@ -31,20 +31,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class MemberController {
 	
-
-	
     @Autowired
     private MemberService memberService;
     
     @Autowired
     private UserService userService;
-    
-    @Autowired
-    private NotificationService notificationService;
-   
-
-    @Autowired
-	private AndroidPushNotificationsService androidPushNotificationsService;
     
     /**
      * Step procedure:
@@ -54,6 +45,7 @@ public class MemberController {
      * @param userBranchPermission
      * @return
      */
+
     @PostMapping("/member")
     public ResponseEntity getMemberOfBranch(@RequestBody UserBranchPermission userBranchPermission) {
         return new ResponseEntity<>(memberService.getMemberOfBranch(userBranchPermission), HttpStatus.OK);
@@ -80,6 +72,13 @@ public class MemberController {
 		String currentUserName = authentication.getName();
 		userBranchPermission.setUsername(currentUserName);
         return new ResponseEntity<>(memberService.joinBranch(userBranchPermission), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/member/branch")
+    public ResponseEntity outBranch(@RequestBody UserBranchPermission userBranchPermission) {
+        String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
+        userBranchPermission.setUsername(currentUserName);
+        return new ResponseEntity<>(memberService.declineRequestMemberOfBranch(userBranchPermission), HttpStatus.OK);
     }
     
 }

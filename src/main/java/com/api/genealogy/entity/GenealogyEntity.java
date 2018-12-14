@@ -12,19 +12,15 @@ public class GenealogyEntity {
     @Column(name = "id")
     private Integer id;
 
-    @Basic
     @Column(name = "name")
     private String name;
 
-    @Basic
     @Column(name = "history", columnDefinition="TEXT")
     private String history;
 
-    @Basic
     @Column(name = "date")
     private Date date;
 
-    @Basic
     @Column(name = "branch")
     private Integer branch;
 

@@ -12,43 +12,33 @@ public class UserEntity {
     @Column(name = "id")
     private Integer id;
 
-    @Basic
     @Column(name = "username")
     private String username;
 
-    @Basic
     @Column(name = "password")
     private String password;
 
-    @Basic
     @Column(name = "role")
     private String role;
 
-    @Basic
     @Column(name = "mail")
     private String mail;
 
-    @Basic
     @Column(name = "fullname")
     private String fullname;
 
-    @Basic
     @Column(name = "gender")
     private Boolean gender;
 
-    @Basic
     @Column(name = "address")
     private String address;
 
-    @Basic
     @Column(name = "avatar")
     private String avatar;
 
-    @Basic
     @Column(name = "birthday")
     private Date birthday;
     
-    @Basic
     @Column(name = "device_id")
     private String deviceId;
 
@@ -57,6 +47,28 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "userEntity", cascade=CascadeType.ALL)
     private List<GenealogyEntity> genealogyEntities;
+
+    @OneToMany(mappedBy = "userCreatedEventEntity", cascade=CascadeType.ALL)
+    private List<EventEntity> eventEntities;
+
+    @OneToMany(mappedBy = "userNotificationEntity", cascade=CascadeType.ALL)
+    private List<NotificationsEntity> notificationsEntities;
+
+    public List<EventEntity> getEventEntities() {
+        return eventEntities;
+    }
+
+    public void setEventEntities(List<EventEntity> eventEntities) {
+        this.eventEntities = eventEntities;
+    }
+
+    public List<NotificationsEntity> getNotificationsEntities() {
+        return notificationsEntities;
+    }
+
+    public void setNotificationsEntities(List<NotificationsEntity> notificationsEntities) {
+        this.notificationsEntities = notificationsEntities;
+    }
 
     public Integer getId() {
         return id;

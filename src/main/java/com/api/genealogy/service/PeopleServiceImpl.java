@@ -85,7 +85,16 @@ public class PeopleServiceImpl implements PeopleService  {
         CodeResponse codeResponse = new CodeResponse();
         PeopleEntity peopleEntity = peopleRepository.findPeopleEntityById(people.getId());
         if (peopleEntity != null){
-            peopleRepository.save(parsePeopleToPeopleEntity(people));
+            peopleEntity.setImage(people.getImage());
+            peopleEntity.setAddress(people.getAddress());
+            peopleEntity.setBirthday(people.getBirthday());
+            peopleEntity.setDeathDay(people.getDeathDay());
+            peopleEntity.setDegree(people.getDegree());
+            peopleEntity.setDescription(people.getDescription());
+            peopleEntity.setGender(people.getGender());
+            peopleEntity.setName(people.getName());
+            peopleEntity.setNickname(people.getNickname());
+            peopleRepository.save(peopleEntity);
             codeResponse.setError(new MessageResponse(HTTPCodeResponse.SUCCESS,"Success"));
         }
         else {
@@ -227,6 +236,9 @@ public class PeopleServiceImpl implements PeopleService  {
         if(people.getParentId() != null){
             peopleEntity.setParentEntity(peopleRepository.findPeopleEntityById(people.getParentId()));
         }
+        if(people.getPartnerId() != null){
+            peopleEntity.setPartnerEntity(peopleRepository.findPeopleEntityById(people.getPartnerId()));
+        }
         return peopleEntity;
     }
 
@@ -246,6 +258,9 @@ public class PeopleServiceImpl implements PeopleService  {
         people.setNickname(peopleEntity.getNickname());
         if(peopleEntity.getParentEntity()!= null){
             people.setParentId(peopleEntity.getParentEntity().getId());
+        }
+        if(peopleEntity.getPartnerEntity()!= null){
+            people.setPartnerId(peopleEntity.getPartnerEntity().getId());
         }
         return people;
     }
