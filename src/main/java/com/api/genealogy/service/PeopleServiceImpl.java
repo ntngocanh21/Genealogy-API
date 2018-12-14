@@ -277,7 +277,7 @@ public class PeopleServiceImpl implements PeopleService  {
 	@Override
 	public PeopleResponse getAllPeopleFromSystem() {
 		List<PeopleEntity> peopleEntities = (List<PeopleEntity>) peopleRepository
-                .getAllPeopleFromSystem();
+                .findAll();
         List<People> peopleList = parseListPeopleEntityToListPeople(peopleEntities);
         MessageResponse messageResponse = new MessageResponse(0,"Success");
         PeopleResponse peopleResponse = new PeopleResponse(messageResponse, peopleList);

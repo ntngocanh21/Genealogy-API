@@ -3,7 +3,7 @@ package com.api.genealogy.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "notifications")
+@Table(name = "notification")
 public class NotificationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
