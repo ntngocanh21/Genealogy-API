@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutionException;
 
 import com.api.genealogy.entity.UserBranchPermissionEntity;
 import com.api.genealogy.entity.UserEntity;
+import com.api.genealogy.repository.NotificationTypeReponsitory;
 import com.api.genealogy.repository.UserBranchPermissionRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,6 +38,9 @@ public class BirthdayTask implements Runnable {
 
     @Autowired
     private UserBranchPermissionRepository userBranchPermissionRepository;
+    
+    @Autowired
+    private NotificationTypeReponsitory notificationTypeReponsitory;
 
     @Override
     public void run() {
@@ -79,11 +83,10 @@ public class BirthdayTask implements Runnable {
         		JSONObject body = new JSONObject();
                 Notification item = new Notification();
                 item.setTitle("Birthday Party");
-                item.setType(PushNotificateionType.BIRTHDAY_PARTY);
+                item.setNotification_type_id(notificationTypeReponsitory.findNotificationTypeEntityByNotificationName(PushNotificateionType.BIRTHDAY_PARTY).getId());
                 item.setContent("You are going to have birthday of "+people.getName()+" Please arrange your time in "+ dayOfParty+".");
-                item.setDeviceId(arrPeople.get(index).getDeviceId());
-                item.setUsername("System");
-                item.setIsPushed(0);
+                item.setUser_id(arrPeople.get(index).getId());
+                item.setReadStatus(false);
                 notificationService.addNotification(item);
                 try {
                     body.put("to", "/topics/" + arrPeople.get(index).getDeviceId());

@@ -3,12 +3,16 @@ package com.api.genealogy.model;
 public class Notification {
 	
 	private Integer id;
-	private String title;
-	private String type;
-	private String content;
-	private String deviceId;
-	private Integer isPushed;
-	private String username;
+
+    private String title;
+
+    private String content;
+
+    private Boolean readStatus;
+
+    public Integer user_id;
+
+    public Integer notification_type_id;
 
     public Notification() {
     }
@@ -29,14 +33,6 @@ public class Notification {
 		this.title = title;
 	}
 
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
 	public String getContent() {
 		return content;
 	}
@@ -45,28 +41,27 @@ public class Notification {
 		this.content = content;
 	}
 
-	public String getDeviceId() {
-		return deviceId;
+	public Boolean getReadStatus() {
+		return readStatus;
 	}
 
-	public void setDeviceId(String deviceId) {
-		this.deviceId = deviceId;
+	public void setReadStatus(Boolean readStatus) {
+		this.readStatus = readStatus;
 	}
 
-	public Integer getIsPushed() {
-		return isPushed;
+	public Integer getUser_id() {
+		return user_id;
 	}
 
-	public void setIsPushed(Integer isPushed) {
-		this.isPushed = isPushed;
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
 	}
-	
-	public String getUsername() {
-		return username;
+
+	public Integer getNotification_type_id() {
+		return notification_type_id;
 	}
-	
-	public void setUsername(String username) {
-		this.username = username;
+
+	public void setNotification_type_id(Integer notification_type_id) {
+		this.notification_type_id = notification_type_id;
 	}
-    
 }

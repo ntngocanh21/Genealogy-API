@@ -10,6 +10,7 @@ import com.api.genealogy.model.User;
 import com.api.genealogy.model.UserBranchPermission;
 import com.api.genealogy.repository.BranchPermissionRepository;
 import com.api.genealogy.repository.BranchRepository;
+import com.api.genealogy.repository.NotificationTypeReponsitory;
 import com.api.genealogy.repository.UserBranchPermissionRepository;
 import com.api.genealogy.repository.UserRepository;
 import com.api.genealogy.service.response.CodeResponse;
@@ -46,6 +47,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Autowired
     private BranchPermissionRepository branchPermissionRepository;
+    
+    @Autowired
+    private NotificationTypeReponsitory notificationTypeReponsitory;
 
     @Override
     public UserResponse getMemberOfBranch(UserBranchPermission userBranchPermission) {
@@ -83,13 +87,13 @@ public class MemberServiceImpl implements MemberService {
         JSONObject body = new JSONObject();
         Notification item = new Notification();
         item.setTitle("Your request join branch has been accepted");
-        item.setType(PushNotificateionType.MEMBER_JOIN);
+        item.setNotification_type_id(notificationTypeReponsitory.findNotificationTypeEntityByNotificationName(PushNotificateionType.ACCEPT_JOIN).getId());
         item.setContent("Your request join branch " + branchRepository.findBranchEntityById(member.getBranch_id()).getName() + " has been accepted");
-        item.setDeviceId(userRepository.findUserEntityByUsername(member.getUsername()).getDeviceId());
-        item.setUsername(member.getUsername());
+        item.setUser_id(userRepository.findUserEntityByUsername(member.getUsername()).getId());
+        item.setReadStatus(false);
         notificationService.addNotification(item);
         try {
-            body.put("to", "/topics/" + item.getDeviceId());
+            body.put("to", "/topics/" + userRepository.findUserEntityByUsername(member.getUsername()).getDeviceId());
             body.put("priority", "high");
 
             JSONObject notification = new JSONObject();
@@ -130,10 +134,10 @@ public class MemberServiceImpl implements MemberService {
         JSONObject body = new JSONObject();
         Notification item = new Notification();
         item.setTitle("Member Request Join Branch");
-        item.setType(PushNotificateionType.MEMBER_JOIN);
+        item.setNotification_type_id(notificationTypeReponsitory.findNotificationTypeEntityByNotificationName(PushNotificateionType.MEMBER_JOIN).getId());
         item.setContent(userEntity.getFullname() + " joined in " + branchEntity.getName() + " of " + branchEntity.getGenealogyEntity().getName() + "Please approve request from Genealogy application");
-        item.setDeviceId(branchEntity.getGenealogyEntity().getUserEntity().getDeviceId());
-        item.setUsername(branchEntity.getGenealogyEntity().getUserEntity().getUsername());
+        item.setUser_id(branchEntity.getGenealogyEntity().getUserEntity().getId());
+        item.setReadStatus(false);
         notificationService.addNotification(item);
         try {
             body.put("to", "/topics/" + branchEntity.getGenealogyEntity().getUserEntity().getDeviceId());

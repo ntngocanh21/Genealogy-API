@@ -52,7 +52,7 @@ public class UserEntity {
     private List<EventEntity> eventEntities;
 
     @OneToMany(mappedBy = "userNotificationEntity", cascade=CascadeType.ALL)
-    private List<NotificationsEntity> notificationsEntities;
+    private List<NotificationEntity> notificationsEntities;
 
     public List<EventEntity> getEventEntities() {
         return eventEntities;
@@ -62,11 +62,11 @@ public class UserEntity {
         this.eventEntities = eventEntities;
     }
 
-    public List<NotificationsEntity> getNotificationsEntities() {
+    public List<NotificationEntity> getNotificationsEntities() {
         return notificationsEntities;
     }
 
-    public void setNotificationsEntities(List<NotificationsEntity> notificationsEntities) {
+    public void setNotificationsEntities(List<NotificationEntity> notificationsEntities) {
         this.notificationsEntities = notificationsEntities;
     }
 

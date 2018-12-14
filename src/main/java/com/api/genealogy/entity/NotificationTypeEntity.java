@@ -15,7 +15,7 @@ public class NotificationTypeEntity {
     private String notificationName;
 
     @OneToMany(mappedBy = "notificationTypeEntity", cascade=CascadeType.ALL)
-    private List<NotificationsEntity> notificationsEntities;
+    private List<NotificationEntity> notificationsEntities;
 
     public Integer getId() {
         return id;
@@ -33,11 +33,11 @@ public class NotificationTypeEntity {
         this.notificationName = notificationName;
     }
 
-    public List<NotificationsEntity> getNotificationsEntities() {
+    public List<NotificationEntity> getNotificationsEntities() {
         return notificationsEntities;
     }
 
-    public void setNotificationsEntities(List<NotificationsEntity> notificationsEntities) {
+    public void setNotificationsEntities(List<NotificationEntity> notificationsEntities) {
         this.notificationsEntities = notificationsEntities;
     }
 }

@@ -22,7 +22,7 @@ import com.api.genealogy.repository.PeopleRepository;
 import com.api.genealogy.service.PeopleService;
 
 @SuppressWarnings("all")
-@Component("DeathAnniversaryTask")
+@Component("BirthdayTask")
 public class BirthdaySchedule {
 	
 	@Autowired

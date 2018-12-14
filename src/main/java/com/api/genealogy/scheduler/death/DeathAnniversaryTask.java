@@ -1,6 +1,5 @@
 package com.api.genealogy.scheduler.death;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -10,9 +9,8 @@ import java.util.concurrent.ExecutionException;
 
 import com.api.genealogy.entity.UserBranchPermissionEntity;
 import com.api.genealogy.entity.UserEntity;
-import com.api.genealogy.model.UserBranchPermission;
+import com.api.genealogy.repository.NotificationTypeReponsitory;
 import com.api.genealogy.repository.UserBranchPermissionRepository;
-import com.api.genealogy.repository.UserRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +38,9 @@ public class DeathAnniversaryTask implements Runnable {
 
     @Autowired
     private UserBranchPermissionRepository userBranchPermissionRepository;
+    
+    @Autowired
+    private NotificationTypeReponsitory notificationTypeReponsitory;
 
     @Override
     public void run() {
@@ -82,11 +83,10 @@ public class DeathAnniversaryTask implements Runnable {
         		JSONObject body = new JSONObject();
                 Notification item = new Notification();
                 item.setTitle("Dealth Aniverssary");
-                item.setType(PushNotificateionType.DEATH_ANNIVERSARY);
+                item.setNotification_type_id(notificationTypeReponsitory.findNotificationTypeEntityByNotificationName(PushNotificateionType.DEATH_ANNIVERSARY).getId());
                 item.setContent("You are going to have Dealth aniverssary of "+people.getName()+" Please arrange your time in "+ dayOfParty+".");
-                item.setDeviceId(arrPeople.get(index).getDeviceId());
-                item.setUsername("System");
-                item.setIsPushed(0);
+                item.setUser_id(arrPeople.get(index).getId());
+                item.setReadStatus(false);
                 notificationService.addNotification(item);
                 try {
                     body.put("to", "/topics/" + arrPeople.get(index).getDeviceId());

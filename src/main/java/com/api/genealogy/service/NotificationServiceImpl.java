@@ -9,12 +9,19 @@ import org.springframework.stereotype.Service;
 import com.api.genealogy.entity.NotificationEntity;
 import com.api.genealogy.model.Notification;
 import com.api.genealogy.repository.NotificationRepository;
-import com.api.genealogy.service.response.MessageResponse;
+import com.api.genealogy.repository.NotificationTypeReponsitory;
+import com.api.genealogy.repository.UserRepository;
 import com.api.genealogy.service.response.NotificationResponse;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
-
+	
+	@Autowired
+	private NotificationTypeReponsitory notificationTypeReponsitory;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
 	@Autowired
     private NotificationRepository notificationRepository;
 	
@@ -27,32 +34,25 @@ public class NotificationServiceImpl implements NotificationService {
 	private NotificationEntity parseNotificationToNotificationEntity(Notification notification) {
         NotificationEntity notificationEntity = new NotificationEntity();
         notificationEntity.setTitle(notification.getTitle());
-        notificationEntity.setType(notification.getType());
+        notificationEntity.setNotificationTypeEntity(notificationTypeReponsitory.findNotificationTypeEntityById(notification.getNotification_type_id()));
         notificationEntity.setContent(notification.getContent());
-        notificationEntity.setDeviceId(notification.getDeviceId());
-        notificationEntity.setIsPushed(notification.getIsPushed());
-        notificationEntity.setUsername(notification.getUsername());
+        notificationEntity.setReadStatus(notification.getReadStatus());
+        notificationEntity.setUserNotificationEntity(userRepository.findUserEntityById(notification.getUser_id()));
         return notificationEntity;
     }
 
 	@Override
 	public NotificationResponse getListOfNotifications(String username, Notification notification) {
-		List<NotificationEntity> notificationEntities = notificationRepository.getListOfNotifications(notification.getDeviceId(), username); 
-		List<Notification> notifications = parseListNotificationEntityToListNotification(notificationEntities);
-        MessageResponse messageResponse = new MessageResponse(0,"Success");
-        NotificationResponse notificationResponse = new NotificationResponse(messageResponse, notifications);
-        return notificationResponse;
+        return null;
 	}
 	
 	public static Notification parseNotificationEntityToNotification(NotificationEntity notificationEntity) {
         Notification notification = new Notification();
         notification.setId(notificationEntity.getId());
         notification.setTitle(notificationEntity.getTitle());
-        notification.setUsername(notificationEntity.getUsername());
-        notification.setIsPushed(notificationEntity.getIsPushed());
-        notification.setType(notificationEntity.getType());
-        notification.setContent(notificationEntity.getContent());
-        notification.setDeviceId(notificationEntity.getDeviceId());
+        notification.setReadStatus(notificationEntity.getReadStatus());
+        notification.setNotification_type_id(notificationEntity.getNotificationTypeEntity().getId());
+        notification.setUser_id(notificationEntity.getUserNotificationEntity().getId());
         return notification;
     }
 
