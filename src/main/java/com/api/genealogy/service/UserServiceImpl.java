@@ -3,8 +3,6 @@ package com.api.genealogy.service;
 import com.api.genealogy.constant.HTTPCodeResponse;
 import com.api.genealogy.entity.UserEntity;
 import com.api.genealogy.model.User;
-import com.api.genealogy.repository.BranchPermissionRepository;
-import com.api.genealogy.repository.UserBranchPermissionRepository;
 import com.api.genealogy.repository.UserRepository;
 import com.api.genealogy.security.JwtGenerator;
 import com.api.genealogy.service.response.LoginResponse;
@@ -25,9 +23,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private JwtGenerator jwtGenerator;
-    
-    @Autowired
-    private UserBranchPermissionRepository userBranchPermissionRepository;
 
     @Override
     public LoginResponse login(User user) {
@@ -36,19 +31,19 @@ public class UserServiceImpl implements UserService {
         if (userEntity == null) {
             messageResponse.setCode(HTTPCodeResponse.OBJECT_NOT_FOUND);
             messageResponse.setDescription("Wrong Information");
-            return new LoginResponse(messageResponse, null, null, null, null);
+            return new LoginResponse(messageResponse, null, null, null);
         } else {
             if (BCrypt.checkpw(user.getPassword(), userEntity.getPassword())) {
                 messageResponse.setCode(HTTPCodeResponse.SUCCESS);
                 messageResponse.setDescription("Success");
                 userEntity.setDeviceId(user.getDeviceId());
                 userRepository.save(userEntity);
-                return new LoginResponse(messageResponse, jwtGenerator.generate(userEntity), userEntity.getAvatar(), userEntity.getFullname(), userBranchPermissionRepository.findBranchPermissionIdByUserId(userEntity.getId()).toString());
+                return new LoginResponse(messageResponse, jwtGenerator.generate(userEntity), userEntity.getAvatar(), userEntity.getFullname());
             }
             else{
                 messageResponse.setCode(HTTPCodeResponse.OBJECT_NOT_FOUND);
                 messageResponse.setDescription("Wrong Information");
-                return new LoginResponse(messageResponse, null, null, null, null);
+                return new LoginResponse(messageResponse, null, null, null);
             }
         }
     }
@@ -73,7 +68,7 @@ public class UserServiceImpl implements UserService {
             userRepository.save(userRegister);
             messageResponse.setCode(HTTPCodeResponse.SUCCESS);
             messageResponse.setDescription("You have been successfully registered");
-            return new LoginResponse(messageResponse, jwtGenerator.generate(userRepository.findUserEntityByUsername(user.getUsername())), user.getAvatar(), user.getFullname(), userBranchPermissionRepository.findBranchPermissionIdByUserId(user.getId()).toString());
+            return new LoginResponse(messageResponse, jwtGenerator.generate(userRepository.findUserEntityByUsername(user.getUsername())), user.getAvatar(), user.getFullname());
         }
         else{
             messageResponse.setCode(HTTPCodeResponse.OBJECT_EXISTED);

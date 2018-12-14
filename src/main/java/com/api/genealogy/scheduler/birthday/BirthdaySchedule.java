@@ -1,4 +1,4 @@
-package com.api.genealogy.scheduler;
+package com.api.genealogy.scheduler.birthday;
 
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
@@ -23,16 +23,16 @@ import com.api.genealogy.service.PeopleService;
 
 @SuppressWarnings("all")
 @Component("DeathAnniversaryTask")
-public class DeathAnniversarySchedule {
+public class BirthdaySchedule {
 	
 	@Autowired
     private TaskScheduler taskScheduler;
 	
 	@Autowired
-    private DeathAnniversaryCronConfig cronConfig;
+    private BirthdayCronConfig cronConfig;
 	
 	@Autowired
-    private DeathAnniversaryTask myTask;
+    private BirthdayTask myTask;
 	
 	public void scheduleAllCrons() {
 		cronConfig.initial();

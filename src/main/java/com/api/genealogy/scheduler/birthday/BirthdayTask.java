@@ -1,6 +1,5 @@
-package com.api.genealogy.scheduler;
+package com.api.genealogy.scheduler.birthday;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -10,9 +9,7 @@ import java.util.concurrent.ExecutionException;
 
 import com.api.genealogy.entity.UserBranchPermissionEntity;
 import com.api.genealogy.entity.UserEntity;
-import com.api.genealogy.model.UserBranchPermission;
 import com.api.genealogy.repository.UserBranchPermissionRepository;
-import com.api.genealogy.repository.UserRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +24,7 @@ import com.api.genealogy.service.NotificationService;
 import com.api.genealogy.service.PeopleService;
 
 @Component
-public class DeathAnniversaryTask implements Runnable {
+public class BirthdayTask implements Runnable {
 
 	@Autowired
     private PeopleService peopleService;
@@ -45,14 +42,14 @@ public class DeathAnniversaryTask implements Runnable {
     public void run() {
     	List<People> peopleList = peopleService.getAllPeopleFromSystem().getPeopleList();
     	for(int index = 0; index < peopleList.size(); index++) {
-        	if (peopleList.get(index).getDeathDay() != null)
-        		validateTime(peopleList.get(index), peopleList.get(index).getDeathDay());
+        	if (peopleList.get(index).getBirthday() != null)
+        		validateTime(peopleList.get(index), peopleList.get(index).getBirthday());
         }
     }
     
-    private void validateTime(People people, Date dealth) {
+    private void validateTime(People people, Date birthday) {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(dealth);
+        cal.setTime(birthday);
         int day = cal.get(Calendar.DATE);
         int month = cal.get(Calendar.MONTH) + 1;
         if (day <= 5) {
@@ -76,14 +73,17 @@ public class DeathAnniversaryTask implements Runnable {
                 arrPeople.add(userBranchPermissionEntity.getUserBranchEntity());
             }
 
+            // Validate Năm Nhuận
+            String dayOfParty = String.valueOf(day+"/"+month+"/"+currentTime.get(Calendar.YEAR));
         	for (int index = 0; index < arrPeople.size(); index++) {
         		JSONObject body = new JSONObject();
                 Notification item = new Notification();
-                item.setTitle("Dealth Aniverssary");
-                item.setType(PushNotificateionType.DEATH_ANNIVERSARY);
-                item.setContent("You are going to have Dealth aniverssary of "+people.getName()+" Please arrange your time.");
+                item.setTitle("Birthday Party");
+                item.setType(PushNotificateionType.BIRTHDAY_PARTY);
+                item.setContent("You are going to have birthday of "+people.getName()+" Please arrange your time in "+ dayOfParty+".");
                 item.setDeviceId(arrPeople.get(index).getDeviceId());
                 item.setUsername("System");
+                item.setIsPushed(0);
                 notificationService.addNotification(item);
                 try {
                     body.put("to", "/topics/" + arrPeople.get(index).getDeviceId());

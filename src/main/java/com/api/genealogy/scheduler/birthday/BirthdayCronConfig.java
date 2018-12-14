@@ -1,4 +1,4 @@
-package com.api.genealogy.scheduler;
+package com.api.genealogy.scheduler.birthday;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import com.google.protobuf.TextFormat.ParseException;
 
 @SuppressWarnings("all")
 @Configuration
-public class DeathAnniversaryCronConfig {
+public class BirthdayCronConfig {
 	
 	@Autowired
     private PeopleService peopleService;
@@ -44,15 +44,15 @@ public class DeathAnniversaryCronConfig {
     private ArrayList<String> getDateSchedulerFromDatabase(List<People> peopleList) {
     	ArrayList<String> temp = new ArrayList<>();
         for(int index = 0; index < peopleList.size(); index++) {
-        	if (peopleList.get(index).getDeathDay() != null)
-        		temp.add(checkDayToSendPushNotification(peopleList.get(index).getDeathDay()));	
+        	if (peopleList.get(index).getBirthday() != null)
+        		temp.add(checkDayToSendPushNotification(peopleList.get(index).getBirthday()));	
         }
 		return temp;
 	}
 
-	private String checkDayToSendPushNotification(Date dealth) {
+	private String checkDayToSendPushNotification(Date birthday) {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(dealth);
+        cal.setTime(birthday);
         int day = cal.get(Calendar.DATE);
         int month = cal.get(Calendar.MONTH) + 1;
         if (day <= 5) {
@@ -63,7 +63,7 @@ public class DeathAnniversaryCronConfig {
         } else {
         	day = day - 5;
         }
-		return "10 06 18 "+day+" "+month+" ?";
+		return "10 26 23 "+day+" "+month+" ?";
 	}
 
 	@Bean

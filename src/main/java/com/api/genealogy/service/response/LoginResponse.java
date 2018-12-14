@@ -6,14 +6,12 @@ public class LoginResponse {
     private String token;
     private String avatar;
     private String fullname;
-    private String branchId;
 
-    public LoginResponse(MessageResponse error, String token, String avatar, String fullname, String branchId) {
+    public LoginResponse(MessageResponse error, String token, String avatar, String fullname) {
         this.error = error;
         this.token = token;
         this.avatar = avatar;
         this.fullname = fullname;
-        this.branchId = branchId;
     }
 
     public LoginResponse(MessageResponse error, String token) {
@@ -32,14 +30,6 @@ public class LoginResponse {
     public String getToken() {
         return token;
     }
-    
-    public String getBranchId() {
-		return branchId;
-	}
-    
-    public void setBranchId(String branchId) {
-		this.branchId = branchId;
-	}
 
     public void setToken(String token) {
         this.token = token;

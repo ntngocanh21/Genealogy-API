@@ -8,7 +8,8 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 
-import com.api.genealogy.scheduler.DeathAnniversarySchedule;
+import com.api.genealogy.scheduler.birthday.BirthdaySchedule;
+import com.api.genealogy.scheduler.death.DeathAnniversarySchedule;
 
 @SpringBootApplication
 @EnableScheduling
@@ -23,5 +24,7 @@ public class GenealogyApplication {
     	ApplicationContext ctx = SpringApplication.run(GenealogyApplication.class, args);
         DeathAnniversarySchedule deathAnniversaryTask = ctx.getBean(DeathAnniversarySchedule.class);
         deathAnniversaryTask.scheduleAllCrons();
+        BirthdaySchedule birthdayTask = ctx.getBean(BirthdaySchedule.class);
+        birthdayTask.scheduleAllCrons();
     }
 }
