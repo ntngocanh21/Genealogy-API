@@ -1,5 +1,6 @@
 package com.api.genealogy.scheduler.death;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -84,7 +85,12 @@ public class DeathAnniversaryTask implements Runnable {
                 Notification item = new Notification();
                 item.setTitle("Dealth Aniverssary");
                 item.setNotification_type_id(notificationTypeReponsitory.findNotificationTypeEntityByNotificationName(PushNotificateionType.DEATH_ANNIVERSARY).getId());
-                item.setContent("You are going to have Dealth aniverssary of "+people.getName()+" Please arrange your time in "+ dayOfParty+".");
+                
+                String text = "You are going to have Dealth aniverssary of "+people.getName()+" Please arrange your time in "+ dayOfParty+"."; 
+                byte[] bytes = text.getBytes(StandardCharsets.ISO_8859_1);
+                text = new String(bytes, StandardCharsets.UTF_8);
+                
+                item.setContent(text);
                 item.setUser_id(arrPeople.get(index).getId());
                 item.setReadStatus(false);
                 notificationService.addNotification(item);
