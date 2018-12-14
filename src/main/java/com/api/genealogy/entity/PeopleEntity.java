@@ -57,7 +57,7 @@ public class PeopleEntity {
     @JoinColumn(name = "partner_id", nullable = true)
     private PeopleEntity partnerEntity;
 
-    @OneToOne(mappedBy = "partnerEntity", cascade=CascadeType.ALL)
+    @OneToOne(mappedBy = "partnerEntity", cascade=CascadeType.REMOVE)
     private PeopleEntity people;
 
     public Integer getId() {
