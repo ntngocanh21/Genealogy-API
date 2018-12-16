@@ -12,7 +12,6 @@ public class BranchPermissionEntity {
     @Column(name = "id")
     private Integer id;
 
-    @Basic
     @Column(name = "permission_name")
     private String permissionName;
 

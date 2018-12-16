@@ -10,7 +10,6 @@ public class UserBranchPermissionEntity {
     @Column(name = "id")
     private Integer id;
 
-    @Basic
     @Column(name = "status")
     private boolean status;
 

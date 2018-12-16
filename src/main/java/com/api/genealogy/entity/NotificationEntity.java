@@ -1,46 +1,35 @@
 package com.api.genealogy.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "notification")
 public class NotificationEntity {
-	
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
 
-    @Basic
     @Column(name = "title")
     private String title;
 
-    @Basic
-    @Column(name = "type")
-    private String type;
-
-    @Basic
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition="TEXT")
     private String content;
-    
-    @Basic
-    @Column(name = "device_id")
-    private String deviceId;
-    
-    @Basic
-    @Column(name = "is_pushed")
-    private Integer isPushed;
-    
-    @Basic
-    @Column(name = "username")
-    private String username;
 
+    @Column(name = "read_status")
+    private Boolean readStatus;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    public UserEntity userNotificationEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "notification_type_id", nullable = false)
+    public NotificationTypeEntity notificationTypeEntity;
+
+    public NotificationEntity() {
+    }
+    
 	public Integer getId() {
 		return id;
 	}
@@ -57,14 +46,6 @@ public class NotificationEntity {
 		this.title = title;
 	}
 
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
 	public String getContent() {
 		return content;
 	}
@@ -72,28 +53,30 @@ public class NotificationEntity {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	
-	public String getDeviceId() {
-		return deviceId;
+
+	public Boolean getReadStatus() {
+		return readStatus;
 	}
-	
-	public void setDeviceId(String deviceId) {
-		this.deviceId = deviceId;
+
+	public void setReadStatus(Boolean readStatus) {
+		this.readStatus = readStatus;
 	}
-	
-	public Integer getIsPushed() {
-		return isPushed;
+
+	public UserEntity getUserNotificationEntity() {
+		return userNotificationEntity;
 	}
-	
-	public void setIsPushed(Integer isPushed) {
-		this.isPushed = isPushed;
+
+	public void setUserNotificationEntity(UserEntity userNotificationEntity) {
+		this.userNotificationEntity = userNotificationEntity;
 	}
-	
-	public String getUsername() {
-		return username;
+
+	public NotificationTypeEntity getNotificationTypeEntity() {
+		return notificationTypeEntity;
 	}
-	
-	public void setUsername(String username) {
-		this.username = username;
+
+	public void setNotificationTypeEntity(NotificationTypeEntity notificationTypeEntity) {
+		this.notificationTypeEntity = notificationTypeEntity;
 	}
+    
 }
+

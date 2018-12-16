@@ -10,4 +10,5 @@ public interface MemberService {
     CodeResponse acceptRequestMemberOfBranch(UserBranchPermission userBranchPermission);
     CodeResponse changeRoleMemberOfBranch(UserBranchPermission userBranchPermission);
     CodeResponse joinBranch(UserBranchPermission userBranchPermission);
+    CodeResponse outBranch(UserBranchPermission userBranchPermission);
 }
