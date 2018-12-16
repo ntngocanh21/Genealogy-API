@@ -1,25 +1,9 @@
 package com.api.genealogy.scheduler.death;
 
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
-
-import com.api.genealogy.entity.PeopleEntity;
-import com.api.genealogy.model.People;
-import com.api.genealogy.repository.BranchRepository;
-import com.api.genealogy.repository.PeopleRepository;
-import com.api.genealogy.service.PeopleService;
 
 @SuppressWarnings("all")
 @Component("DeathAnniversaryTask")
