@@ -13,9 +13,12 @@ public class EventEntity {
 
     @Column(name = "date")
     private Date date;
-
+    
     @Column(name = "content", columnDefinition="TEXT")
     private String content;
+
+    @Column(name = "title")
+    private String title;
 
     @ManyToOne
     @JoinColumn(name = "user_id_created", nullable = false)
@@ -40,6 +43,14 @@ public class EventEntity {
     public void setDate(Date date) {
         this.date = date;
     }
+    
+    public String getTitle() {
+		return title;
+	}
+    
+    public void setTitle(String title) {
+		this.title = title;
+	}
 
     public String getContent() {
         return content;
