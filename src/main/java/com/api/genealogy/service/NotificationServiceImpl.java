@@ -6,11 +6,20 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.api.genealogy.entity.BranchEntity;
+import com.api.genealogy.entity.EventEntity;
 import com.api.genealogy.entity.NotificationEntity;
+import com.api.genealogy.model.Branch;
+import com.api.genealogy.model.Event;
 import com.api.genealogy.model.Notification;
+import com.api.genealogy.repository.BranchRepository;
+import com.api.genealogy.repository.EventRepository;
 import com.api.genealogy.repository.NotificationRepository;
 import com.api.genealogy.repository.NotificationTypeReponsitory;
 import com.api.genealogy.repository.UserRepository;
+import com.api.genealogy.service.response.BranchResponse;
+import com.api.genealogy.service.response.EventResponse;
+import com.api.genealogy.service.response.MessageResponse;
 import com.api.genealogy.service.response.NotificationResponse;
 
 @Service
@@ -21,6 +30,12 @@ public class NotificationServiceImpl implements NotificationService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private EventRepository eventRepository;
+	
+	@Autowired 
+	private BranchRepository branchRepository;
 	
 	@Autowired
     private NotificationRepository notificationRepository;
@@ -63,5 +78,29 @@ public class NotificationServiceImpl implements NotificationService {
             notifications.add(notification);
         }
         return notifications;
+    }
+
+	@Override
+	public EventResponse pushEvent(Event event) {
+		EventEntity eventEntity = parseEventToEventEntity(event);
+		eventRepository.save(eventEntity);
+		
+//		List<EventEntity> eventEntities = (List<EventEntity>) eventRepository
+//                .findEventEntitiesById(genealogyId);
+//		
+//		List<Event> events = parseListBranchEntityToListBranch(eventEntities);
+//        MessageResponse messageResponse = new MessageResponse(0,"Success");
+//        EventResponse eventResponse = new EventResponse(messageResponse, events);
+		return null;
+	}
+	
+	private EventEntity parseEventToEventEntity(Event event) {
+		EventEntity eventEntity = new EventEntity();
+		eventEntity.setTitle(event.getTitle());
+		eventEntity.setContent(event.getContent());
+		eventEntity.setDate(event.getDate());
+		eventEntity.setUserCreatedEventEntity(userRepository.findUserEntityByUsername(event.getUsername()));
+		eventEntity.setBranchEventEntity(branchRepository.findBranchEntityById(event.getBranch_id()));
+        return eventEntity;
     }
 }
