@@ -26,11 +26,11 @@ public class NotificationController {
 	@Autowired
 	private NotificationService notificationService;
 
-    @PostMapping("/notification")
-    public ResponseEntity getListOfNotifications(@RequestBody Notification notification) {
+    @PostMapping("/notification/user")
+    public ResponseEntity getListOfNotifications() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserName = authentication.getName();
-        return new ResponseEntity<>(notificationService.getListOfNotifications(currentUserName, notification), HttpStatus.OK);
+        return new ResponseEntity<>(notificationService.getListOfNotifications(currentUserName), HttpStatus.OK);
     }
     
     @PutMapping("/event")

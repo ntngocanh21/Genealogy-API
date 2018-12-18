@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.api.genealogy.entity.BranchEntity;
 import com.api.genealogy.entity.EventEntity;
 import com.api.genealogy.entity.NotificationEntity;
+import com.api.genealogy.entity.UserEntity;
 import com.api.genealogy.model.Branch;
 import com.api.genealogy.model.Event;
 import com.api.genealogy.model.Notification;
@@ -19,6 +20,7 @@ import com.api.genealogy.repository.NotificationTypeReponsitory;
 import com.api.genealogy.repository.UserRepository;
 import com.api.genealogy.service.response.BranchResponse;
 import com.api.genealogy.service.response.EventResponse;
+import com.api.genealogy.service.response.GenealogyResponse;
 import com.api.genealogy.service.response.MessageResponse;
 import com.api.genealogy.service.response.NotificationResponse;
 
@@ -57,10 +59,29 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
 	@Override
-	public NotificationResponse getListOfNotifications(String username, Notification notification) {
-        return null;
+	public NotificationResponse getListOfNotifications(String username) {
+		int userId = userRepository.findUserEntityByUsername(username).getId();
+		List<NotificationEntity> arrNotificationEntity = notificationRepository.findNotificationEntityByUserNotificationEntity_Id(userId);
+		MessageResponse messageResponse = new MessageResponse(0,"Success");
+        return new NotificationResponse(messageResponse, getListNotification(arrNotificationEntity));
 	}
-	
+
+
+	private List<Notification> getListNotification(List<NotificationEntity> arrNotifications) {
+		List<Notification> temps = new ArrayList<>();
+		for (int index = 0; index < arrNotifications.size(); index++) {
+			Notification notification = new Notification();
+			notification.setId(arrNotifications.get(index).getId());
+			notification.setTitle(arrNotifications.get(index).getTitle());
+			notification.setContent(arrNotifications.get(index).getContent());
+			notification.setReadStatus(arrNotifications.get(index).getReadStatus());
+			notification.setNotification_type_id(arrNotifications.get(index).getNotificationTypeEntity().getId());
+			notification.setUser_id(arrNotifications.get(index).getUserNotificationEntity().getId());
+			temps.add(notification);
+		}
+		return temps;
+	}
+
 	public static Notification parseNotificationEntityToNotification(NotificationEntity notificationEntity) {
         Notification notification = new Notification();
         notification.setId(notificationEntity.getId());
@@ -84,13 +105,6 @@ public class NotificationServiceImpl implements NotificationService {
 	public EventResponse pushEvent(Event event) {
 		EventEntity eventEntity = parseEventToEventEntity(event);
 		eventRepository.save(eventEntity);
-		
-//		List<EventEntity> eventEntities = (List<EventEntity>) eventRepository
-//                .findEventEntitiesById(genealogyId);
-//		
-//		List<Event> events = parseListBranchEntityToListBranch(eventEntities);
-//        MessageResponse messageResponse = new MessageResponse(0,"Success");
-//        EventResponse eventResponse = new EventResponse(messageResponse, events);
 		return null;
 	}
 	
