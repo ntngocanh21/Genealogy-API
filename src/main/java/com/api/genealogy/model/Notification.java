@@ -1,21 +1,22 @@
 package com.api.genealogy.model;
 
+import java.util.Date;
+
 public class Notification {
-	
+
 	private Integer id;
 
-    private String title;
+	private String title;
 
-    private String content;
+	private String content;
 
-    private Boolean readStatus;
+	private Date date;
 
-    public Integer user_id;
+	private Boolean readStatus;
 
-    public Integer notification_type_id;
+	public Integer userId;
 
-    public Notification() {
-    }
+	public Integer notificationTypeId;
 
 	public Integer getId() {
 		return id;
@@ -41,6 +42,14 @@ public class Notification {
 		this.content = content;
 	}
 
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
 	public Boolean getReadStatus() {
 		return readStatus;
 	}
@@ -49,19 +58,19 @@ public class Notification {
 		this.readStatus = readStatus;
 	}
 
-	public Integer getUser_id() {
-		return user_id;
+	public Integer getUserId() {
+		return userId;
 	}
 
-	public void setUser_id(Integer user_id) {
-		this.user_id = user_id;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
-	public Integer getNotification_type_id() {
-		return notification_type_id;
+	public Integer getNotificationTypeId() {
+		return notificationTypeId;
 	}
 
-	public void setNotification_type_id(Integer notification_type_id) {
-		this.notification_type_id = notification_type_id;
+	public void setNotificationTypeId(Integer notificationTypeId) {
+		this.notificationTypeId = notificationTypeId;
 	}
 }

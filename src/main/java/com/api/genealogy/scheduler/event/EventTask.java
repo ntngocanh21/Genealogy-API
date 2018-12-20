@@ -1,4 +1,24 @@
-package com.api.genealogy.scheduler.death;
+package com.api.genealogy.scheduler.event;
+
+import com.api.genealogy.constant.PushNotificateionType;
+import com.api.genealogy.entity.EventEntity;
+import com.api.genealogy.entity.UserBranchPermissionEntity;
+import com.api.genealogy.entity.UserEntity;
+import com.api.genealogy.model.Event;
+import com.api.genealogy.model.Notification;
+import com.api.genealogy.model.People;
+import com.api.genealogy.repository.BranchRepository;
+import com.api.genealogy.repository.NotificationTypeReponsitory;
+import com.api.genealogy.repository.UserBranchPermissionRepository;
+import com.api.genealogy.service.AndroidPushNotificationsService;
+import com.api.genealogy.service.EventService;
+import com.api.genealogy.service.NotificationService;
+import com.api.genealogy.service.PeopleService;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -8,28 +28,11 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import com.api.genealogy.entity.UserBranchPermissionEntity;
-import com.api.genealogy.entity.UserEntity;
-import com.api.genealogy.repository.NotificationTypeReponsitory;
-import com.api.genealogy.repository.UserBranchPermissionRepository;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.stereotype.Component;
-
-import com.api.genealogy.constant.PushNotificateionType;
-import com.api.genealogy.model.Notification;
-import com.api.genealogy.model.People;
-import com.api.genealogy.service.AndroidPushNotificationsService;
-import com.api.genealogy.service.NotificationService;
-import com.api.genealogy.service.PeopleService;
-
 @Component
-public class DeathAnniversaryTask implements Runnable {
+public class EventTask implements Runnable {
 
 	@Autowired
-    private PeopleService peopleService;
+    private EventService eventService;
 	
 	@Autowired
     private NotificationService notificationService;
@@ -43,69 +46,67 @@ public class DeathAnniversaryTask implements Runnable {
     @Autowired
     private NotificationTypeReponsitory notificationTypeReponsitory;
 
+    @Autowired
+    private BranchRepository branchRepository;
+
     @Override
     public void run() {
-    	List<People> peopleList = peopleService.getAllPeopleFromSystem().getPeopleList();
-    	for(int index = 0; index < peopleList.size(); index++) {
-        	if (peopleList.get(index).getDeathDay() != null)
-        		validateTime(peopleList.get(index), peopleList.get(index).getDeathDay());
+    	List<Event> eventList = eventService.getAllEventFromSystem();
+    	for(int index = 0; index < eventList.size(); index++) {
+            System.out.println("STEP 2: " + eventList.get(index).getDate());
+            validateTime(eventList.get(index), eventList.get(index).getDate());
         }
     }
     
-    private void validateTime(People people, Date death) {
+    private void validateTime(Event event, Date eventDate) {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(death);
+        cal.setTime(eventDate);
         int day = cal.get(Calendar.DATE);
         int month = cal.get(Calendar.MONTH) + 1;
-        if (day <= 3) {
-        	day = 28;
-        	if (month != 0) {
-        		month = month - 1;	
-        	}
-        } else {
-        	day = day - 3;
-        }
-		
+        int year = cal.get(Calendar.YEAR);
+        int hour = cal.get(Calendar.HOUR);
+        int minute = cal.get(Calendar.MINUTE);
+
         Calendar currentTime = Calendar.getInstance();
         currentTime.setTime(new Date());
-        int day1 = currentTime.get(Calendar.DATE);
-        int month1 = currentTime.get(Calendar.MONTH) + 1;
+        int currentDay = currentTime.get(Calendar.DATE);
+        int currentMonth = currentTime.get(Calendar.MONTH) + 1;
+        int currentYear = currentTime.get(Calendar.YEAR);
+        int currentHour = currentTime.get(Calendar.HOUR);
+        int currentMinute = currentTime.get(Calendar.MINUTE);
 
         List<UserEntity> arrPeople = new ArrayList<>();
-        if (day == day1 && month == month1) {
-            List<UserBranchPermissionEntity>  arr = userBranchPermissionRepository.findUserBranchPermissionEntitiesByBranchUserEntity_IdAndStatus(people.getBranchId(), true);
+        if (day == currentDay && month == currentMonth && year == currentYear && hour == currentHour && minute == currentMinute) {
+            List<UserBranchPermissionEntity>  arr = userBranchPermissionRepository.findUserBranchPermissionEntitiesByBranchUserEntity_IdAndStatus(event.getBranchId(), true);
             for(UserBranchPermissionEntity userBranchPermissionEntity : arr){
                 arrPeople.add(userBranchPermissionEntity.getUserBranchEntity());
             }
 
-            // Validate Năm Nhuận
-            String dayOfParty = String.valueOf((day - 1)+"/"+month+"/"+currentTime.get(Calendar.YEAR));
+            String branchName = branchRepository.findBranchEntityById(event.getBranchId()).getName();
+            String dayOfEvent = day+"/"+month+"/"+year+" "+hour+":"+minute;
         	for (int index = 0; index < arrPeople.size(); index++) {
         		JSONObject body = new JSONObject();
                 Notification item = new Notification();
-                item.setTitle("Death Anniversary");
-                item.setNotificationTypeId(notificationTypeReponsitory.findNotificationTypeEntityByNotificationName(PushNotificateionType.DEATH_ANNIVERSARY).getId());
+                item.setTitle("Event");
+                item.setNotificationTypeId(notificationTypeReponsitory.findNotificationTypeEntityByNotificationName(PushNotificateionType.FAMILY_ACTIVITIES).getId());
                 
-                String text = "You are going to have Death anniversary of "+people.getName()+"\nPlease arrange your time in "+ dayOfParty+".";
+                String text = "You are going to have Event from "+ branchName + " \n Please arrange your time in "+ dayOfEvent+".";
                 byte[] bytes = text.getBytes(StandardCharsets.ISO_8859_1);
                 text = new String(bytes, StandardCharsets.UTF_8);
-                
-                item.setContent(text);
+
+                item.setContent(event.getContent());
                 item.setUserId(arrPeople.get(index).getId());
                 item.setReadStatus(false);
-                Date date = new Date();
-                date.setDate(day - 1);
-                date.setMonth(month);
-                item.setDate(date);
+                item.setDate(eventDate);
                 notificationService.addNotification(item);
                 try {
                     body.put("to", "/topics/" + arrPeople.get(index).getDeviceId());
                     body.put("priority", "high");
+
                     JSONObject notification = new JSONObject();
                     notification.put("title", item.getTitle());
-                    notification.put("body", item.getContent());
+                    notification.put("body", text);
                     JSONObject data = new JSONObject();
-
                     body.put("notification", notification);
                     body.put("data", data);
                 } catch (JSONException e1) {
@@ -119,13 +120,12 @@ public class DeathAnniversaryTask implements Runnable {
 
                 try {
                     String firebaseResponse = pushNotification.get();
-                    System.out.println("Firebase response" + "\n Response: " + firebaseResponse);
+                    System.out.println("Firebase response: " + firebaseResponse);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
-		
         	}
         }
 	}

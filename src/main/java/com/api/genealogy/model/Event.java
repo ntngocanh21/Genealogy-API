@@ -6,74 +6,52 @@ import java.util.Date;
 
 public class Event {
     private Integer id;
-    private String title;
     private String content;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", timezone="Asia/Ho_Chi_Minh")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss", timezone="Asia/Ho_Chi_Minh")
     private Date date;
-    private Integer branch_id;
-    private String username;
-
+    private Integer branchId;
+    private Integer userId;
 
     public Event() {
     }
-
 
 	public Integer getId() {
 		return id;
 	}
 
-
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
-
-	public String getTitle() {
-		return title;
-	}
-
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
 
 	public String getContent() {
 		return content;
 	}
 
-
 	public void setContent(String content) {
 		this.content = content;
 	}
-
 
 	public Date getDate() {
 		return date;
 	}
 
-
 	public void setDate(Date date) {
 		this.date = date;
 	}
 
-
-	public Integer getBranch_id() {
-		return branch_id;
+	public Integer getBranchId() {
+		return branchId;
 	}
 
-
-	public void setBranch_id(Integer branch_id) {
-		this.branch_id = branch_id;
+	public void setBranchId(Integer branchId) {
+		this.branchId = branchId;
 	}
 
-
-	public String getUsername() {
-		return username;
-	}
-	
-	public void setUsername(String username) {
-		this.username = username;
+	public Integer getUserId() {
+		return userId;
 	}
 
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
 }

@@ -5,116 +5,70 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.api.genealogy.entity.BranchEntity;
-import com.api.genealogy.entity.EventEntity;
 import com.api.genealogy.entity.NotificationEntity;
-import com.api.genealogy.entity.UserEntity;
-import com.api.genealogy.model.Branch;
-import com.api.genealogy.model.Event;
 import com.api.genealogy.model.Notification;
 import com.api.genealogy.repository.BranchRepository;
 import com.api.genealogy.repository.EventRepository;
 import com.api.genealogy.repository.NotificationRepository;
 import com.api.genealogy.repository.NotificationTypeReponsitory;
 import com.api.genealogy.repository.UserRepository;
-import com.api.genealogy.service.response.BranchResponse;
-import com.api.genealogy.service.response.EventResponse;
-import com.api.genealogy.service.response.GenealogyResponse;
 import com.api.genealogy.service.response.MessageResponse;
 import com.api.genealogy.service.response.NotificationResponse;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
-	
+
 	@Autowired
 	private NotificationTypeReponsitory notificationTypeReponsitory;
-	
+
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
-	private EventRepository eventRepository;
-	
-	@Autowired 
-	private BranchRepository branchRepository;
-	
-	@Autowired
-    private NotificationRepository notificationRepository;
-	
+	private NotificationRepository notificationRepository;
+
 	@Override
 	public void addNotification(Notification notification) {
-        NotificationEntity notificationEntity = parseNotificationToNotificationEntity(notification);
+		NotificationEntity notificationEntity = parseNotificationToNotificationEntity(notification);
 		notificationRepository.save(notificationEntity);
 	}
-	
+
 	private NotificationEntity parseNotificationToNotificationEntity(Notification notification) {
-        NotificationEntity notificationEntity = new NotificationEntity();
-        notificationEntity.setTitle(notification.getTitle());
-        notificationEntity.setNotificationTypeEntity(notificationTypeReponsitory.findNotificationTypeEntityById(notification.getNotification_type_id()));
-        notificationEntity.setContent(notification.getContent());
-        notificationEntity.setReadStatus(notification.getReadStatus());
-        notificationEntity.setUserNotificationEntity(userRepository.findUserEntityById(notification.getUser_id()));
-        return notificationEntity;
-    }
+		NotificationEntity notificationEntity = new NotificationEntity();
+		notificationEntity.setTitle(notification.getTitle());
+		notificationEntity.setDate(notification.getDate());
+		notificationEntity.setNotificationTypeEntity(notificationTypeReponsitory.findNotificationTypeEntityById(notification.getNotificationTypeId()));
+		notificationEntity.setContent(notification.getContent());
+		notificationEntity.setReadStatus(notification.getReadStatus());
+		notificationEntity.setUserNotificationEntity(userRepository.findUserEntityById(notification.getUserId()));
+		return notificationEntity;
+	}
 
 	@Override
 	public NotificationResponse getListOfNotifications(String username) {
 		int userId = userRepository.findUserEntityByUsername(username).getId();
-		List<NotificationEntity> arrNotificationEntity = notificationRepository.findNotificationEntityByUserNotificationEntity_Id(userId);
+		List<NotificationEntity> arrNotificationEntity = notificationRepository.findNotificationEntitiesByUserNotificationEntity_IdOrderByDate(userId);
 		MessageResponse messageResponse = new MessageResponse(0,"Success");
-        return new NotificationResponse(messageResponse, getListNotification(arrNotificationEntity));
-	}
-
-
-	private List<Notification> getListNotification(List<NotificationEntity> arrNotifications) {
-		List<Notification> temps = new ArrayList<>();
-		for (int index = 0; index < arrNotifications.size(); index++) {
-			Notification notification = new Notification();
-			notification.setId(arrNotifications.get(index).getId());
-			notification.setTitle(arrNotifications.get(index).getTitle());
-			notification.setContent(arrNotifications.get(index).getContent());
-			notification.setReadStatus(arrNotifications.get(index).getReadStatus());
-			notification.setNotification_type_id(arrNotifications.get(index).getNotificationTypeEntity().getId());
-			notification.setUser_id(arrNotifications.get(index).getUserNotificationEntity().getId());
-			temps.add(notification);
-		}
-		return temps;
+		return new NotificationResponse(messageResponse, parseListNotificationEntityToListNotification(arrNotificationEntity));
 	}
 
 	public static Notification parseNotificationEntityToNotification(NotificationEntity notificationEntity) {
-        Notification notification = new Notification();
-        notification.setId(notificationEntity.getId());
-        notification.setTitle(notificationEntity.getTitle());
-        notification.setReadStatus(notificationEntity.getReadStatus());
-        notification.setNotification_type_id(notificationEntity.getNotificationTypeEntity().getId());
-        notification.setUser_id(notificationEntity.getUserNotificationEntity().getId());
-        return notification;
-    }
-
-    public static List<Notification> parseListNotificationEntityToListNotification(List<NotificationEntity> notificationEntities) {
-        List<Notification> notifications = new ArrayList<>();
-        for (NotificationEntity notificationEntity : notificationEntities) {
-            Notification notification = parseNotificationEntityToNotification(notificationEntity);
-            notifications.add(notification);
-        }
-        return notifications;
-    }
-
-	@Override
-	public EventResponse pushEvent(Event event) {
-		EventEntity eventEntity = parseEventToEventEntity(event);
-		eventRepository.save(eventEntity);
-		return null;
+		Notification notification = new Notification();
+		notification.setId(notificationEntity.getId());
+		notification.setTitle(notificationEntity.getTitle());
+		notification.setReadStatus(notificationEntity.getReadStatus());
+		notification.setNotificationTypeId(notificationEntity.getNotificationTypeEntity().getId());
+		notification.setDate(notificationEntity.getDate());
+		notification.setContent(notificationEntity.getContent());
+		return notification;
 	}
-	
-	private EventEntity parseEventToEventEntity(Event event) {
-		EventEntity eventEntity = new EventEntity();
-		eventEntity.setTitle(event.getTitle());
-		eventEntity.setContent(event.getContent());
-		eventEntity.setDate(event.getDate());
-		eventEntity.setUserCreatedEventEntity(userRepository.findUserEntityByUsername(event.getUsername()));
-		eventEntity.setBranchEventEntity(branchRepository.findBranchEntityById(event.getBranch_id()));
-        return eventEntity;
-    }
+
+	public static List<Notification> parseListNotificationEntityToListNotification(List<NotificationEntity> notificationEntities) {
+		List<Notification> notifications = new ArrayList<>();
+		for (NotificationEntity notificationEntity : notificationEntities) {
+			Notification notification = parseNotificationEntityToNotification(notificationEntity);
+			notifications.add(notification);
+		}
+		return notifications;
+	}
 }
