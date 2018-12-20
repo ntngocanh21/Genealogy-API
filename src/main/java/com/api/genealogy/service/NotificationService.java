@@ -7,6 +7,6 @@ import com.api.genealogy.service.response.NotificationResponse;
 
 public interface NotificationService {
 	void addNotification(Notification notification);
-	NotificationResponse getListOfNotifications(String username, Notification notification);
 	EventResponse pushEvent(Event event);
+	NotificationResponse getListOfNotifications(String username);
 }
