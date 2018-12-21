@@ -27,44 +27,44 @@ import com.api.genealogy.service.PeopleService;
 @Component
 public class BirthdayTask implements Runnable {
 
-	@Autowired
+    @Autowired
     private PeopleService peopleService;
-	
-	@Autowired
+
+    @Autowired
     private NotificationService notificationService;
-	
-	@Autowired
+
+    @Autowired
     private AndroidPushNotificationsService androidPushNotificationsService;
 
     @Autowired
     private UserBranchPermissionRepository userBranchPermissionRepository;
-    
+
     @Autowired
     private NotificationTypeReponsitory notificationTypeReponsitory;
 
     @Override
     public void run() {
-    	List<People> peopleList = peopleService.getAllPeopleFromSystem().getPeopleList();
-    	for(int index = 0; index < peopleList.size(); index++) {
-        	if (peopleList.get(index).getBirthday() != null)
-        		validateTime(peopleList.get(index), peopleList.get(index).getBirthday());
+        List<People> peopleList = peopleService.getAllPeopleFromSystem().getPeopleList();
+        for(int index = 0; index < peopleList.size(); index++) {
+            if (peopleList.get(index).getBirthday() != null)
+                validateTime(peopleList.get(index), peopleList.get(index).getBirthday());
         }
     }
-    
+
     private void validateTime(People people, Date birthday) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(birthday);
         int day = cal.get(Calendar.DATE);
         int month = cal.get(Calendar.MONTH) + 1;
-        if (day <= 5) {
-        	day = 28;
-        	if (month != 0) {
-        		month = month - 1;	
-        	}
+        if (day <= 3) {
+            day = 28;
+            if (month != 0) {
+                month = month - 1;
+            }
         } else {
-        	day = day - 5;
+            day = day - 3;
         }
-		
+
         Calendar currentTime = Calendar.getInstance();
         currentTime.setTime(new Date());
         int day1 = currentTime.get(Calendar.DATE);
@@ -79,19 +79,22 @@ public class BirthdayTask implements Runnable {
 
             // Validate Năm Nhuận
             String dayOfParty = String.valueOf(day+"/"+month+"/"+currentTime.get(Calendar.YEAR));
-        	for (int index = 0; index < arrPeople.size(); index++) {
-        		JSONObject body = new JSONObject();
+            for (int index = 0; index < arrPeople.size(); index++) {
+                JSONObject body = new JSONObject();
                 Notification item = new Notification();
                 item.setTitle("Birthday Party");
-                item.setNotification_type_id(notificationTypeReponsitory.findNotificationTypeEntityByNotificationName(PushNotificateionType.BIRTHDAY_PARTY).getId());
-                item.setContent("You are going to have birthday of "+people.getName()+" Please arrange your time in "+ dayOfParty+".");
-                item.setUser_id(arrPeople.get(index).getId());
+                item.setNotificationTypeId(notificationTypeReponsitory.findNotificationTypeEntityByNotificationName(PushNotificateionType.BIRTHDAY_PARTY).getId());
+                item.setContent("You are going to have birthday of "+people.getName()+"\nPlease arrange your time in "+ dayOfParty+".");
+                item.setUserId(arrPeople.get(index).getId());
                 item.setReadStatus(false);
+                Date date = new Date();
+                date.setDate(day);
+                date.setMonth(month);
+                item.setDate(date);
                 notificationService.addNotification(item);
                 try {
                     body.put("to", "/topics/" + arrPeople.get(index).getDeviceId());
                     body.put("priority", "high");
-
                     JSONObject notification = new JSONObject();
                     notification.put("title", item.getTitle());
                     notification.put("body", item.getContent());
@@ -109,15 +112,14 @@ public class BirthdayTask implements Runnable {
 
                 try {
                     String firebaseResponse = pushNotification.get();
-                    System.out.println("Firebase response"
-                            + "\n Response: " + firebaseResponse);
+                    System.out.println("Firebase response: " + firebaseResponse);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
-		
-        	}
+
+            }
         }
-	}
+    }
 }

@@ -1,6 +1,7 @@
 package com.api.genealogy.entity;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "notification")
@@ -12,6 +13,9 @@ public class NotificationEntity {
 
     @Column(name = "title")
     private String title;
+
+	@Column(name = "date")
+	private Date date;
 
     @Column(name = "content", columnDefinition="TEXT")
     private String content;
@@ -77,6 +81,13 @@ public class NotificationEntity {
 	public void setNotificationTypeEntity(NotificationTypeEntity notificationTypeEntity) {
 		this.notificationTypeEntity = notificationTypeEntity;
 	}
-    
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
 }
 

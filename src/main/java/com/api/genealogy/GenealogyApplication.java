@@ -1,5 +1,6 @@
 package com.api.genealogy;
 
+import com.api.genealogy.scheduler.event.EventSchedule;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -26,5 +27,7 @@ public class GenealogyApplication {
         deathAnniversaryTask.scheduleAllCrons();
         BirthdaySchedule birthdayTask = ctx.getBean(BirthdaySchedule.class);
         birthdayTask.scheduleAllCrons();
+        EventSchedule eventTask = ctx.getBean(EventSchedule.class);
+        eventTask.scheduleAllCrons();
     }
 }

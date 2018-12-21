@@ -1,12 +1,9 @@
 package com.api.genealogy.scheduler.death;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import javax.sound.midi.Soundbank;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 
 import com.api.genealogy.model.People;
 import com.api.genealogy.service.PeopleService;
-import com.google.protobuf.TextFormat.ParseException;
 
 @SuppressWarnings("all")
 @Configuration
@@ -55,15 +51,15 @@ public class DeathAnniversaryCronConfig {
         cal.setTime(dealth);
         int day = cal.get(Calendar.DATE);
         int month = cal.get(Calendar.MONTH) + 1;
-        if (day <= 5) {
+        if (day <= 3) {
         	day = 28;
         	if (month != 0) {
         		month = month - 1;	
         	}
         } else {
-        	day = day - 5;
+        	day = day - 3;
         }
-		return "10 01 14 "+day+" "+month+" ?";
+		return "00 59 04 "+day+" "+month+" ?";
 	}
 
 	@Bean

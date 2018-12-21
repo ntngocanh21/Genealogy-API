@@ -1,32 +1,27 @@
-package com.api.genealogy.scheduler.birthday;
+package com.api.genealogy.scheduler.event;
 
-import java.text.SimpleDateFormat;
+import com.api.genealogy.model.Event;
+import com.api.genealogy.service.EventService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.sound.midi.Soundbank;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import com.api.genealogy.model.People;
-import com.api.genealogy.service.PeopleService;
-import com.google.protobuf.TextFormat.ParseException;
-
 @SuppressWarnings("all")
 @Configuration
-public class BirthdayCronConfig {
+public class EventCronConfig {
 	
 	@Autowired
-    private PeopleService peopleService;
+    private EventService eventService;
 	
 	private ArrayList<String> schedules;
 	
 	public void initial() {
-		schedules = getDateSchedulerFromDatabase(peopleService.getAllPeopleFromSystem().getPeopleList());
+		schedules = getDateSchedulerFromDatabase(eventService.getAllEventFromSystem());
 	}
 	
 	/**
@@ -41,29 +36,24 @@ public class BirthdayCronConfig {
 	   |     +----------- minute(0-59)
 	   +------------- second(0-59)
 	 */
-    private ArrayList<String> getDateSchedulerFromDatabase(List<People> peopleList) {
+
+    private ArrayList<String> getDateSchedulerFromDatabase(List<Event> eventList) {
     	ArrayList<String> temp = new ArrayList<>();
-        for(int index = 0; index < peopleList.size(); index++) {
-        	if (peopleList.get(index).getBirthday() != null)
-        		temp.add(checkDayToSendPushNotification(peopleList.get(index).getBirthday()));	
+        for(int index = 0; index < eventList.size(); index++) {
+			temp.add(checkDayToSendPushNotification(eventList.get(index).getDate()));
         }
 		return temp;
 	}
 
-	private String checkDayToSendPushNotification(Date birthday) {
+	private String checkDayToSendPushNotification(Date eventDate) {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(birthday);
+        cal.setTime(eventDate);
         int day = cal.get(Calendar.DATE);
         int month = cal.get(Calendar.MONTH) + 1;
-        if (day <= 3) {
-        	day = 28;
-        	if (month != 0) {
-        		month = month - 1;	
-        	}
-        } else {
-        	day = day - 3;
-        }
-        return "00 59 04 "+day+" "+month+" ?";
+		int year = cal.get(Calendar.YEAR);
+		int hour = cal.get(Calendar.HOUR);
+		int minute = cal.get(Calendar.MINUTE);
+		return "00 " + minute + " " + hour + " " + day + " " + month + " *";
 	}
 
 	@Bean

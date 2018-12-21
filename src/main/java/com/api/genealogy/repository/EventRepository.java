@@ -4,7 +4,9 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.api.genealogy.entity.EventEntity;
 
-public interface EventRepository extends CrudRepository<EventEntity, Integer> {
+import java.util.List;
 
-	
+public interface EventRepository extends CrudRepository<EventEntity, Integer> {
+    List<EventEntity> findEventEntityByUserCreatedEventEntity_UsernameAndBranchEventEntity_IdOrderByDate(String username, Integer branchId);
+    List<EventEntity> findEventEntityByBranchEventEntity_IdOrderByDate(Integer branchId);
 }
