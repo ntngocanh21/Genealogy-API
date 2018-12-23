@@ -51,8 +51,9 @@ public class EventCronConfig {
         int day = cal.get(Calendar.DATE);
         int month = cal.get(Calendar.MONTH) + 1;
 		int year = cal.get(Calendar.YEAR);
-		int hour = cal.get(Calendar.HOUR);
+		int hour = cal.get(Calendar.HOUR) == 0 ? 12 : cal.get(Calendar.HOUR);
 		int minute = cal.get(Calendar.MINUTE);
+		System.out.println("Date: " + "00 " + minute + " " + hour + " " + day + " " + month + " *");
 		return "00 " + minute + " " + hour + " " + day + " " + month + " *";
 	}
 

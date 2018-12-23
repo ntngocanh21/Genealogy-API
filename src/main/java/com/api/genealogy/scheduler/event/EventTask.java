@@ -63,7 +63,7 @@ public class EventTask implements Runnable {
         int day = cal.get(Calendar.DATE);
         int month = cal.get(Calendar.MONTH) + 1;
         int year = cal.get(Calendar.YEAR);
-        int hour = cal.get(Calendar.HOUR);
+        int hour = cal.get(Calendar.HOUR) == 0 ? 12 : cal.get(Calendar.HOUR);
         int minute = cal.get(Calendar.MINUTE);
 
         Calendar currentTime = Calendar.getInstance();
@@ -71,7 +71,7 @@ public class EventTask implements Runnable {
         int currentDay = currentTime.get(Calendar.DATE);
         int currentMonth = currentTime.get(Calendar.MONTH) + 1;
         int currentYear = currentTime.get(Calendar.YEAR);
-        int currentHour = currentTime.get(Calendar.HOUR);
+        int currentHour = currentTime.get(Calendar.HOUR)  == 0 ? 12 : cal.get(Calendar.HOUR);
         int currentMinute = currentTime.get(Calendar.MINUTE);
 
         List<UserEntity> arrPeople = new ArrayList<>();
