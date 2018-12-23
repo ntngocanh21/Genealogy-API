@@ -1,15 +1,17 @@
 package com.api.genealogy.scheduler.death;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 
 @SuppressWarnings("all")
-@Component("DeathAnniversaryTask")
+@Component("deathAnniversarySchedule")
 public class DeathAnniversarySchedule {
 	
 	@Autowired
+    @Qualifier(value="infDeathScheduler")
     private TaskScheduler taskScheduler;
 	
 	@Autowired

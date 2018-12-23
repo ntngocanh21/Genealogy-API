@@ -15,7 +15,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 @SuppressWarnings("all")
 @Configuration
-@EnableAsync
 public class DeathAnniversaryCronConfig {
 	
 	@Autowired
@@ -26,19 +25,7 @@ public class DeathAnniversaryCronConfig {
 	public void initial() {
 		schedules = getDateSchedulerFromDatabase(peopleService.getAllPeopleFromSystem().getPeopleList());
 	}
-	
-	/**
-	 * Read cron-job here: http://www.quartz-scheduler.org/documentation/quartz-2.x/tutorials/crontrigger.html
-	 * *  .  *  .  *  .  *  .  *  .  *  
-	   -     -     -     -     -     -
-	   |     |     |     |     |     |
-	   |     |     |     |     |     +----- year  
-	   |     |     |     |     +----- month(1-12)
-	   |     |     |     +------- day(0-31)
-	   |     |     +--------- hour(0-23)
-	   |     +----------- minute(0-59)
-	   +------------- second(0-59)
-	 */
+
     private ArrayList<String> getDateSchedulerFromDatabase(List<People> peopleList) {
     	ArrayList<String> temp = new ArrayList<>();
         for(int index = 0; index < peopleList.size(); index++) {
@@ -61,7 +48,7 @@ public class DeathAnniversaryCronConfig {
         } else {
         	day = day - 3;
         }
-		return "00 59 04 "+day+" "+month+" ?";
+		return "00 25 23 " + day + " " + month + " ?";
 	}
 
 	@Bean

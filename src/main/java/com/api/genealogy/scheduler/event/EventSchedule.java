@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class EventSchedule {
 	
 	@Autowired
-    @Qualifier(value="infScheduler")
+    @Qualifier(value="infEventScheduler")
     private TaskScheduler taskScheduler;
 	
 	@Autowired

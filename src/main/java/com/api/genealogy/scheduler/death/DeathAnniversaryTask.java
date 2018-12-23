@@ -87,9 +87,7 @@ public class DeathAnniversaryTask implements Runnable {
                 item.setNotificationTypeId(notificationTypeReponsitory.findNotificationTypeEntityByNotificationName(PushNotificateionType.DEATH_ANNIVERSARY).getId());
                 
                 String text = "You are going to have Death anniversary of "+people.getName()+"\nPlease arrange your time in "+ dayOfParty+".";
-                byte[] bytes = text.getBytes(StandardCharsets.ISO_8859_1);
-                text = new String(bytes, StandardCharsets.UTF_8);
-                
+
                 item.setContent(text);
                 item.setUserId(arrPeople.get(index).getId());
                 item.setReadStatus(false);
