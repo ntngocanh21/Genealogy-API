@@ -48,7 +48,7 @@ public class DeathAnniversaryCronConfig {
         } else {
         	day = day - 3;
         }
-		return "00 25 23 " + day + " " + month + " ?";
+		return "00 33 0 " + day + " " + month + " ?";
 	}
 
 	@Bean

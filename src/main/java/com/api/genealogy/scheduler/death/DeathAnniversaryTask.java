@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import com.api.genealogy.entity.NotificationEntity;
 import com.api.genealogy.entity.UserBranchPermissionEntity;
 import com.api.genealogy.entity.UserEntity;
+import com.api.genealogy.repository.NotificationRepository;
 import com.api.genealogy.repository.NotificationTypeReponsitory;
 import com.api.genealogy.repository.UserBranchPermissionRepository;
 import org.json.JSONException;
@@ -42,6 +44,9 @@ public class DeathAnniversaryTask implements Runnable {
     
     @Autowired
     private NotificationTypeReponsitory notificationTypeReponsitory;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @Override
     public void run() {
@@ -82,26 +87,25 @@ public class DeathAnniversaryTask implements Runnable {
             String dayOfParty = String.valueOf((day - 1)+"/"+month+"/"+currentTime.get(Calendar.YEAR));
         	for (int index = 0; index < arrPeople.size(); index++) {
         		JSONObject body = new JSONObject();
-                Notification item = new Notification();
+                NotificationEntity item = new NotificationEntity();
                 item.setTitle("Death Anniversary");
-                item.setNotificationTypeId(notificationTypeReponsitory.findNotificationTypeEntityByNotificationName(PushNotificateionType.DEATH_ANNIVERSARY).getId());
-                
+                item.setNotificationTypeEntity(notificationTypeReponsitory.findNotificationTypeEntityByNotificationName(PushNotificateionType.DEATH_ANNIVERSARY));
                 String text = "You are going to have Death anniversary of "+people.getName()+"\nPlease arrange your time in "+ dayOfParty+".";
 
                 item.setContent(text);
-                item.setUserId(arrPeople.get(index).getId());
+                item.setUserNotificationEntity(arrPeople.get(index));
                 item.setReadStatus(false);
                 Date date = new Date();
                 date.setDate(day - 1);
                 date.setMonth(month);
                 item.setDate(date);
-                notificationService.addNotification(item);
+                NotificationEntity notificationEntity = notificationRepository.save(item);
                 try {
                     body.put("to", "/topics/" + arrPeople.get(index).getDeviceId());
                     body.put("priority", "high");
                     JSONObject notification = new JSONObject();
-                    notification.put("title", item.getTitle());
-                    notification.put("body", item.getContent());
+                    notification.put("title", notificationEntity.getTitle());
+                    notification.put("body", notificationEntity.getContent());
                     JSONObject data = new JSONObject();
 
                     body.put("notification", notification);
