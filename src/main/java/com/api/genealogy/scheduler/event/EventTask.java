@@ -73,9 +73,10 @@ public class EventTask implements Runnable {
         int currentYear = currentTime.get(Calendar.YEAR);
         int currentHour = currentTime.get(Calendar.HOUR)  == 0 ? 12 : cal.get(Calendar.HOUR);
         int currentMinute = currentTime.get(Calendar.MINUTE);
+        int currentSecond = currentTime.get(Calendar.SECOND);
 
         List<UserEntity> arrPeople = new ArrayList<>();
-        if (day == currentDay && month == currentMonth && year == currentYear && hour == currentHour && minute == currentMinute) {
+        if (day == currentDay && month == currentMonth && year == currentYear && hour == currentHour && minute == currentMinute && currentSecond == 0) {
             List<UserBranchPermissionEntity>  arr = userBranchPermissionRepository.findUserBranchPermissionEntitiesByBranchUserEntity_IdAndStatus(event.getBranchId(), true);
             for(UserBranchPermissionEntity userBranchPermissionEntity : arr){
                 arrPeople.add(userBranchPermissionEntity.getUserBranchEntity());

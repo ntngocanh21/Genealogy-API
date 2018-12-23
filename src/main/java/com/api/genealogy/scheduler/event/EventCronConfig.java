@@ -21,7 +21,8 @@ public class EventCronConfig {
 	private ArrayList<String> schedules;
 	
 	public void initial() {
-		schedules = getDateSchedulerFromDatabase(eventService.getAllEventFromSystem());
+//		schedules = getDateSchedulerFromDatabase(eventService.getAllEventFromSystem());
+		schedules = getDateSchedulerFromDatabaseNew();
 	}
 
     private ArrayList<String> getDateSchedulerFromDatabase(List<Event> eventList) {
@@ -31,6 +32,14 @@ public class EventCronConfig {
         }
 		return temp;
 	}
+
+    private ArrayList<String> getDateSchedulerFromDatabaseNew() {
+        ArrayList<String> temp = new ArrayList<>();
+        for(int index = 0; index < 60; index++) {
+            temp.add(index + " * * * * *");
+        }
+        return temp;
+    }
 
 	private String checkDayToSendPushNotification(Date eventDate) {
         Calendar cal = Calendar.getInstance();
