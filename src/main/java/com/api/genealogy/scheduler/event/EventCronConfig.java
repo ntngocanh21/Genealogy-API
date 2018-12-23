@@ -23,19 +23,6 @@ public class EventCronConfig {
 	public void initial() {
 		schedules = getDateSchedulerFromDatabase(eventService.getAllEventFromSystem());
 	}
-	
-	/**
-	 * Read cron-job here: http://www.quartz-scheduler.org/documentation/quartz-2.x/tutorials/crontrigger.html
-	 * *  .  *  .  *  .  *  .  *  .  *  
-	   -     -     -     -     -     -
-	   |     |     |     |     |     |
-	   |     |     |     |     |     +----- year  
-	   |     |     |     |     +----- month(1-12)
-	   |     |     |     +------- day(0-31)
-	   |     |     +--------- hour(0-23)
-	   |     +----------- minute(0-59)
-	   +------------- second(0-59)
-	 */
 
     private ArrayList<String> getDateSchedulerFromDatabase(List<Event> eventList) {
     	ArrayList<String> temp = new ArrayList<>();
@@ -51,9 +38,8 @@ public class EventCronConfig {
         int day = cal.get(Calendar.DATE);
         int month = cal.get(Calendar.MONTH) + 1;
 		int year = cal.get(Calendar.YEAR);
-		int hour = cal.get(Calendar.HOUR);
+		int hour = Integer.parseInt(converDateToString(eventDate));
 		int minute = cal.get(Calendar.MINUTE);
-		System.out.println("Date: " + "00 " + minute + " " + hour + " " + day + " " + month + " *");
 		return "00 " + minute + " " + hour + " " + day + " " + month + " *";
 	}
 
@@ -66,8 +52,12 @@ public class EventCronConfig {
         return schedules;
     }
 
+    private String converDateToString(Date date) {
+        return date.toString().substring(11,13);
+    }
+
     public void setSchedules(ArrayList<String> schedules) {
         this.schedules = schedules;
     }
-    
+
 }

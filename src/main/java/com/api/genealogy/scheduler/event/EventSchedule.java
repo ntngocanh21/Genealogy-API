@@ -1,16 +1,17 @@
 package com.api.genealogy.scheduler.event;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 
 @SuppressWarnings("all")
-@Component("EventTask")
+@Component("eventSchedule")
 public class EventSchedule {
 	
 	@Autowired
+    @Qualifier(value="infScheduler")
     private TaskScheduler taskScheduler;
 	
 	@Autowired
@@ -19,9 +20,10 @@ public class EventSchedule {
 	@Autowired
     private EventTask myTask;
 
-    @Scheduled(fixedRate = 60000)
 	public void scheduleAllCrons() {
         cronConfig.initial();
-        cronConfig.getSchedules().forEach( cron -> taskScheduler.schedule(myTask, new CronTrigger(cron)) );
+        cronConfig.getSchedules().forEach(
+                cron -> taskScheduler.schedule(myTask, new CronTrigger(cron))
+        );
     }
 }
