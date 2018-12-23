@@ -63,7 +63,7 @@ public class BirthdayCronConfig {
         } else {
         	day = day - 3;
         }
-        return "00 59 04 "+day+" "+month+" ?";
+        return "00 14 03 "+day+" "+month+" ?";
 	}
 
 	@Bean

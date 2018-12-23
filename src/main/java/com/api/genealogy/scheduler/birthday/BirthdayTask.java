@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import com.api.genealogy.entity.NotificationEntity;
 import com.api.genealogy.entity.UserBranchPermissionEntity;
 import com.api.genealogy.entity.UserEntity;
+import com.api.genealogy.repository.NotificationRepository;
 import com.api.genealogy.repository.NotificationTypeReponsitory;
 import com.api.genealogy.repository.UserBranchPermissionRepository;
 import org.json.JSONException;
@@ -41,6 +43,9 @@ public class BirthdayTask implements Runnable {
 
     @Autowired
     private NotificationTypeReponsitory notificationTypeReponsitory;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @Override
     public void run() {
@@ -77,21 +82,26 @@ public class BirthdayTask implements Runnable {
                 arrPeople.add(userBranchPermissionEntity.getUserBranchEntity());
             }
 
-            // Validate Năm Nhuận
-            String dayOfParty = String.valueOf(day+"/"+month+"/"+currentTime.get(Calendar.YEAR));
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(birthday);
+            int dayBirthday = calendar.get(Calendar.DATE);
+            int monthBirthday = calendar.get(Calendar.MONTH)+1;
+
+            String dayOfBirthday = String.valueOf(dayBirthday+"/"+monthBirthday+"/"+currentTime.get(Calendar.YEAR));
             for (int index = 0; index < arrPeople.size(); index++) {
                 JSONObject body = new JSONObject();
-                Notification item = new Notification();
+                NotificationEntity item = new NotificationEntity();
                 item.setTitle("Birthday Party");
-                item.setNotificationTypeId(notificationTypeReponsitory.findNotificationTypeEntityByNotificationName(PushNotificateionType.BIRTHDAY_PARTY).getId());
-                item.setContent("You are going to have birthday of "+people.getName()+"\nPlease arrange your time in "+ dayOfParty+".");
-                item.setUserId(arrPeople.get(index).getId());
+                item.setNotificationTypeEntity(notificationTypeReponsitory.findNotificationTypeEntityByNotificationName(PushNotificateionType.BIRTHDAY_PARTY));
+                item.setContent("You are going to have birthday of "+people.getName()+"\nPlease arrange your time in "+ dayOfBirthday +".");
+                item.setUserNotificationEntity(arrPeople.get(index));
                 item.setReadStatus(false);
                 Date date = new Date();
-                date.setDate(day);
-                date.setMonth(month);
+                date.setDate(dayBirthday);
+                date.setMonth(monthBirthday-1);
+                date.setYear(date.getYear()-1);
                 item.setDate(date);
-                notificationService.addNotification(item);
+                notificationRepository.save(item);
                 try {
                     body.put("to", "/topics/" + arrPeople.get(index).getDeviceId());
                     body.put("priority", "high");
@@ -112,7 +122,7 @@ public class BirthdayTask implements Runnable {
 
                 try {
                     String firebaseResponse = pushNotification.get();
-                    System.out.println("Firebase response: " + firebaseResponse);
+                    System.out.println("Firebase response birthday: " + firebaseResponse);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {

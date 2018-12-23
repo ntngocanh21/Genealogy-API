@@ -47,7 +47,7 @@ public class NotificationServiceImpl implements NotificationService {
 	@Override
 	public NotificationResponse getListOfNotifications(String username) {
 		int userId = userRepository.findUserEntityByUsername(username).getId();
-		List<NotificationEntity> arrNotificationEntity = notificationRepository.findNotificationEntitiesByUserNotificationEntity_IdOrderByDate(userId);
+		List<NotificationEntity> arrNotificationEntity = notificationRepository.findNotificationEntitiesByUserNotificationEntity_IdOrderByIdDesc(userId);
 		MessageResponse messageResponse = new MessageResponse(0,"Success");
 		return new NotificationResponse(messageResponse, parseListNotificationEntityToListNotification(arrNotificationEntity));
 	}

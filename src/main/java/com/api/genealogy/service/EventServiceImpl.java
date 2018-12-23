@@ -41,7 +41,7 @@ public class EventServiceImpl implements EventService {
 	@Override
 	public EventResponse getCreatedEvent(String currentUserName, Integer branchId) {
 		EventResponse eventResponse = new EventResponse();
-		List<EventEntity> createdEventEntities = eventRepository.findEventEntityByUserCreatedEventEntity_UsernameAndBranchEventEntity_IdOrderByDate(currentUserName, branchId);
+		List<EventEntity> createdEventEntities = eventRepository.findEventEntityByUserCreatedEventEntity_UsernameAndBranchEventEntity_IdOrderByDateDesc(currentUserName, branchId);
 		List<Event> eventList = parseListEventEntityToListEvent(createdEventEntities);
 		eventResponse.setError(new MessageResponse(HTTPCodeResponse.SUCCESS,"Success"));
 		eventResponse.setEventList(eventList);

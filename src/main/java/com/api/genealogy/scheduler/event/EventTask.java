@@ -82,16 +82,13 @@ public class EventTask implements Runnable {
             }
 
             String branchName = branchRepository.findBranchEntityById(event.getBranchId()).getName();
-            String dayOfEvent = day+"/"+month+"/"+year+" "+hour+":"+minute;
         	for (int index = 0; index < arrPeople.size(); index++) {
         		JSONObject body = new JSONObject();
                 Notification item = new Notification();
                 item.setTitle("Event");
                 item.setNotificationTypeId(notificationTypeReponsitory.findNotificationTypeEntityByNotificationName(PushNotificateionType.FAMILY_ACTIVITIES).getId());
                 
-                String text = "You are going to have Event from "+ branchName + " \n Please arrange your time in "+ dayOfEvent+".";
-                byte[] bytes = text.getBytes(StandardCharsets.ISO_8859_1);
-                text = new String(bytes, StandardCharsets.UTF_8);
+                String text = "You have an Event from "+ branchName + " \n Please arrange your time to join it.";
 
                 item.setContent(event.getContent());
                 item.setUserId(arrPeople.get(index).getId());

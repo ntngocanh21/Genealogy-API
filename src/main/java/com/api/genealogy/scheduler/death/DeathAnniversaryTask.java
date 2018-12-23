@@ -83,21 +83,39 @@ public class DeathAnniversaryTask implements Runnable {
                 arrPeople.add(userBranchPermissionEntity.getUserBranchEntity());
             }
 
-            // Validate Năm Nhuận
-            String dayOfParty = String.valueOf((day - 1)+"/"+month+"/"+currentTime.get(Calendar.YEAR));
-        	for (int index = 0; index < arrPeople.size(); index++) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(death);
+            int dayDeathday = cal.get(Calendar.DATE);
+            int monthDeathday = cal.get(Calendar.MONTH)+1;
+            String dayOfDeathDay = String.valueOf(dayDeathday-1+"/"+monthDeathday+"/"+currentTime.get(Calendar.YEAR));
+
+            if((monthDeathday == 1 || monthDeathday == 3 || monthDeathday == 5 || monthDeathday == 7 || monthDeathday == 8 || monthDeathday == 10
+            ||monthDeathday == 12) && dayDeathday-1 == 0){
+                monthDeathday = monthDeathday -1;
+                dayDeathday = 30;
+                dayOfDeathDay = String.valueOf(dayDeathday+"/"+monthDeathday+"/"+currentTime.get(Calendar.YEAR));
+            }
+
+            if((monthDeathday == 2 || monthDeathday == 4 || monthDeathday == 6 || monthDeathday == 9 || monthDeathday == 11) && dayDeathday-1 == 0){
+                monthDeathday = monthDeathday -1;
+                dayDeathday = 31;
+                dayOfDeathDay = String.valueOf(dayDeathday+"/"+monthDeathday+"/"+currentTime.get(Calendar.YEAR));
+            }
+
+            for (int index = 0; index < arrPeople.size(); index++) {
         		JSONObject body = new JSONObject();
                 NotificationEntity item = new NotificationEntity();
                 item.setTitle("Death Anniversary");
                 item.setNotificationTypeEntity(notificationTypeReponsitory.findNotificationTypeEntityByNotificationName(PushNotificateionType.DEATH_ANNIVERSARY));
-                String text = "You are going to have Death anniversary of "+people.getName()+"\nPlease arrange your time in "+ dayOfParty+".";
+                String text = "You are going to have Death anniversary of "+people.getName()+"\nPlease arrange your time in "+ dayOfDeathDay+".";
 
                 item.setContent(text);
                 item.setUserNotificationEntity(arrPeople.get(index));
                 item.setReadStatus(false);
                 Date date = new Date();
-                date.setDate(day - 1);
-                date.setMonth(month);
+                date.setDate(dayDeathday-1);
+                date.setMonth(monthDeathday-1);
+                date.setYear(date.getYear()-1);
                 item.setDate(date);
                 NotificationEntity notificationEntity = notificationRepository.save(item);
                 try {
@@ -121,7 +139,7 @@ public class DeathAnniversaryTask implements Runnable {
 
                 try {
                     String firebaseResponse = pushNotification.get();
-                    System.out.println("Firebase response" + "\n Response: " + firebaseResponse);
+                    System.out.println("Firebase response death anniversary: " + firebaseResponse);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
