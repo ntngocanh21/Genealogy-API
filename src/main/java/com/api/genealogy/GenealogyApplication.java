@@ -1,7 +1,6 @@
 package com.api.genealogy;
 
 import com.api.genealogy.scheduler.birthday.BirthdaySchedule;
-import com.api.genealogy.scheduler.birthday.BirthdayTask;
 import com.api.genealogy.scheduler.death.DeathAnniversarySchedule;
 import com.api.genealogy.scheduler.event.EventSchedule;
 import org.springframework.beans.factory.annotation.Autowired;
