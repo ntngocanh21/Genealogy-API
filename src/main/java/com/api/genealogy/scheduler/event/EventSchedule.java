@@ -21,7 +21,6 @@ public class EventSchedule {
     private EventTask myTask;
 
 	public void scheduleAllCrons() {
-        cronConfig.initial();
         cronConfig.getSchedules().forEach(
                 cron -> taskScheduler.schedule(myTask, new CronTrigger(cron))
         );

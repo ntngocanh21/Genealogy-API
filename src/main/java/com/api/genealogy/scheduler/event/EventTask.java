@@ -1,26 +1,22 @@
 package com.api.genealogy.scheduler.event;
 
 import com.api.genealogy.constant.PushNotificateionType;
-import com.api.genealogy.entity.EventEntity;
 import com.api.genealogy.entity.UserBranchPermissionEntity;
 import com.api.genealogy.entity.UserEntity;
 import com.api.genealogy.model.Event;
 import com.api.genealogy.model.Notification;
-import com.api.genealogy.model.People;
 import com.api.genealogy.repository.BranchRepository;
 import com.api.genealogy.repository.NotificationTypeReponsitory;
 import com.api.genealogy.repository.UserBranchPermissionRepository;
 import com.api.genealogy.service.AndroidPushNotificationsService;
 import com.api.genealogy.service.EventService;
 import com.api.genealogy.service.NotificationService;
-import com.api.genealogy.service.PeopleService;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -83,6 +79,7 @@ public class EventTask implements Runnable {
 
             String branchName = branchRepository.findBranchEntityById(event.getBranchId()).getName();
         	for (int index = 0; index < arrPeople.size(); index++) {
+
         		JSONObject body = new JSONObject();
                 Notification item = new Notification();
                 item.setTitle("Event");

@@ -19,18 +19,40 @@ public class EventCronConfig {
     private EventService eventService;
 	
 	private ArrayList<String> schedules;
-	
-	public void initial() {
-		schedules = getDateSchedulerFromDatabase(eventService.getAllEventFromSystem());
-	}
 
     private ArrayList<String> getDateSchedulerFromDatabase(List<Event> eventList) {
-    	ArrayList<String> temp = new ArrayList<>();
+        ArrayList<String> temp = new ArrayList<>();
         for(int index = 0; index < eventList.size(); index++) {
-			temp.add(checkDayToSendPushNotification(eventList.get(index).getDate()));
+            if (removeTaskIfNoExistedTime(eventList.get(index))) {
+                temp.add(checkDayToSendPushNotification(eventList.get(index).getDate()));
+            }
         }
 		return temp;
 	}
+
+    private boolean removeTaskIfNoExistedTime(Event event) {
+        boolean isCheck = false;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(event.getDate());
+        int day = cal.get(Calendar.DATE);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int year = cal.get(Calendar.YEAR);
+        int hour = cal.get(Calendar.HOUR) == 0 ? 12 : cal.get(Calendar.HOUR);
+        int minute = cal.get(Calendar.MINUTE);
+
+        Calendar currentTime = Calendar.getInstance();
+        currentTime.setTime(new Date());
+        int currentDay = currentTime.get(Calendar.DATE);
+        int currentMonth = currentTime.get(Calendar.MONTH) + 1;
+        int currentYear = currentTime.get(Calendar.YEAR);
+        int currentHour = currentTime.get(Calendar.HOUR)  == 0 ? 12 : cal.get(Calendar.HOUR);
+        int currentMinute = currentTime.get(Calendar.MINUTE);
+
+        if (day == currentDay && month == currentMonth && year == currentYear && hour == currentHour && minute == currentMinute) {
+            isCheck =  true;
+        }
+        return isCheck;
+    }
 
 	private String checkDayToSendPushNotification(Date eventDate) {
         Calendar cal = Calendar.getInstance();
@@ -48,8 +70,8 @@ public class EventCronConfig {
         return this.schedules;
     }
 
-    public List<String> getSchedules() {
-        return schedules;
+    public ArrayList<String> getSchedules() {
+        return getDateSchedulerFromDatabase(eventService.getAllEventFromSystem());
     }
 
     private String converDateToString(Date date) {
