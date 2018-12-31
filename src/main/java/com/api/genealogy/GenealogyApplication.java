@@ -15,7 +15,6 @@ import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 
 @SpringBootApplication
 @EnableScheduling
-//@ImportResource({"classpath*:applicationContext.xml"})
 public class GenealogyApplication {
 	
 	@Bean

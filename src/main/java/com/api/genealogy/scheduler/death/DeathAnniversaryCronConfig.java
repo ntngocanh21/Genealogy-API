@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 
 import com.api.genealogy.model.People;
 import com.api.genealogy.service.PeopleService;
-import org.springframework.scheduling.annotation.EnableAsync;
 
 @SuppressWarnings("all")
 @Configuration
@@ -48,7 +47,7 @@ public class DeathAnniversaryCronConfig {
         } else {
         	day = day - 3;
         }
-		return "00 52 04 " + day + " " + month + " ?";
+		return "00 16 08 " + day + " " + month + " ?";
 	}
 
 	@Bean
