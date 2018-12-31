@@ -14,51 +14,64 @@ import java.util.List;
 @SuppressWarnings("all")
 @Configuration
 public class EventCronConfig {
-	
-	@Autowired
+
+    @Autowired
     private EventService eventService;
-	
-	private ArrayList<String> schedules;
-	
-	public void initial() {
-//		schedules = getDateSchedulerFromDatabase(eventService.getAllEventFromSystem());
-		schedules = getDateSchedulerFromDatabaseNew();
-	}
+
+    private ArrayList<String> schedules;
 
     private ArrayList<String> getDateSchedulerFromDatabase(List<Event> eventList) {
-    	ArrayList<String> temp = new ArrayList<>();
-        for(int index = 0; index < eventList.size(); index++) {
-			temp.add(checkDayToSendPushNotification(eventList.get(index).getDate()));
-        }
-		return temp;
-	}
-
-    private ArrayList<String> getDateSchedulerFromDatabaseNew() {
         ArrayList<String> temp = new ArrayList<>();
-        for(int index = 0; index < 60; index++) {
-            temp.add(index + " * * * * *");
+        for(int index = 0; index < eventList.size(); index++) {
+            if (removeTaskIfNoExistedTime(eventList.get(index))) {
+                temp.add(checkDayToSendPushNotification(eventList.get(index).getDate()));
+            }
         }
         return temp;
     }
 
-	private String checkDayToSendPushNotification(Date eventDate) {
+    private boolean removeTaskIfNoExistedTime(Event event) {
+        boolean isCheck = false;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(event.getDate());
+        int day = cal.get(Calendar.DATE);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int year = cal.get(Calendar.YEAR);
+        int hour = cal.get(Calendar.HOUR) == 0 ? 12 : cal.get(Calendar.HOUR);
+        int minute = cal.get(Calendar.MINUTE);
+
+        Calendar currentTime = Calendar.getInstance();
+        currentTime.setTime(new Date());
+        int currentDay = currentTime.get(Calendar.DATE);
+        int currentMonth = currentTime.get(Calendar.MONTH) + 1;
+        int currentYear = currentTime.get(Calendar.YEAR);
+        int currentHour = currentTime.get(Calendar.HOUR)  == 0 ? 12 : cal.get(Calendar.HOUR);
+        int currentMinute = currentTime.get(Calendar.MINUTE);
+
+        if (day == currentDay && month == currentMonth && year == currentYear && hour == currentHour && minute == currentMinute) {
+            isCheck =  true;
+        }
+        return isCheck;
+    }
+
+    private String checkDayToSendPushNotification(Date eventDate) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(eventDate);
         int day = cal.get(Calendar.DATE);
         int month = cal.get(Calendar.MONTH) + 1;
-		int year = cal.get(Calendar.YEAR);
-		int hour = Integer.parseInt(converDateToString(eventDate));
-		int minute = cal.get(Calendar.MINUTE);
-		return "00 " + minute + " " + hour + " " + day + " " + month + " *";
-	}
+        int year = cal.get(Calendar.YEAR);
+        int hour = Integer.parseInt(converDateToString(eventDate));
+        int minute = cal.get(Calendar.MINUTE);
+        return "00 " + minute + " " + hour + " " + day + " " + month + " *";
+    }
 
-	@Bean
+    @Bean
     public List<String> schedules() {
         return this.schedules;
     }
 
-    public List<String> getSchedules() {
-        return schedules;
+    public ArrayList<String> getSchedules() {
+        return getDateSchedulerFromDatabase(eventService.getAllEventFromSystem());
     }
 
     private String converDateToString(Date date) {

@@ -30,18 +30,18 @@ import com.api.genealogy.service.PeopleService;
 @Component
 public class DeathAnniversaryTask implements Runnable {
 
-	@Autowired
+    @Autowired
     private PeopleService peopleService;
-	
-	@Autowired
+
+    @Autowired
     private NotificationService notificationService;
-	
-	@Autowired
+
+    @Autowired
     private AndroidPushNotificationsService androidPushNotificationsService;
 
     @Autowired
     private UserBranchPermissionRepository userBranchPermissionRepository;
-    
+
     @Autowired
     private NotificationTypeReponsitory notificationTypeReponsitory;
 
@@ -50,27 +50,27 @@ public class DeathAnniversaryTask implements Runnable {
 
     @Override
     public void run() {
-    	List<People> peopleList = peopleService.getAllPeopleFromSystem().getPeopleList();
-    	for(int index = 0; index < peopleList.size(); index++) {
-        	if (peopleList.get(index).getDeathDay() != null)
-        		validateTime(peopleList.get(index), peopleList.get(index).getDeathDay());
+        List<People> peopleList = peopleService.getAllPeopleFromSystem().getPeopleList();
+        for(int index = 0; index < peopleList.size(); index++) {
+            if (peopleList.get(index).getDeathDay() != null)
+                validateTime(peopleList.get(index), peopleList.get(index).getDeathDay());
         }
     }
-    
+
     private void validateTime(People people, Date death) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(death);
         int day = cal.get(Calendar.DATE);
         int month = cal.get(Calendar.MONTH) + 1;
         if (day <= 3) {
-        	day = 28;
-        	if (month != 0) {
-        		month = month - 1;	
-        	}
+            day = 28;
+            if (month != 0) {
+                month = month - 1;
+            }
         } else {
-        	day = day - 3;
+            day = day - 3;
         }
-		
+
         Calendar currentTime = Calendar.getInstance();
         currentTime.setTime(new Date());
         int day1 = currentTime.get(Calendar.DATE);
@@ -90,7 +90,7 @@ public class DeathAnniversaryTask implements Runnable {
             String dayOfDeathDay = String.valueOf(dayDeathday-1+"/"+monthDeathday+"/"+currentTime.get(Calendar.YEAR));
 
             if((monthDeathday == 1 || monthDeathday == 3 || monthDeathday == 5 || monthDeathday == 7 || monthDeathday == 8 || monthDeathday == 10
-            ||monthDeathday == 12) && dayDeathday-1 == 0){
+                    ||monthDeathday == 12) && dayDeathday-1 == 0){
                 monthDeathday = monthDeathday -1;
                 dayDeathday = 30;
                 dayOfDeathDay = String.valueOf(dayDeathday+"/"+monthDeathday+"/"+currentTime.get(Calendar.YEAR));
@@ -103,7 +103,7 @@ public class DeathAnniversaryTask implements Runnable {
             }
 
             for (int index = 0; index < arrPeople.size(); index++) {
-        		JSONObject body = new JSONObject();
+                JSONObject body = new JSONObject();
                 NotificationEntity item = new NotificationEntity();
                 item.setTitle("Death Anniversary");
                 item.setNotificationTypeEntity(notificationTypeReponsitory.findNotificationTypeEntityByNotificationName(PushNotificateionType.DEATH_ANNIVERSARY));
@@ -145,8 +145,8 @@ public class DeathAnniversaryTask implements Runnable {
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
-		
-        	}
+
+            }
         }
-	}
+    }
 }

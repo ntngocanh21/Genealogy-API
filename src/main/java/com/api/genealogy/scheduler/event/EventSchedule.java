@@ -3,27 +3,24 @@ package com.api.genealogy.scheduler.event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 
 @SuppressWarnings("all")
 @Component("eventSchedule")
-//@Component("EventTask")
 public class EventSchedule {
-	
-	@Autowired
-//    @Qualifier(value="infEventScheduler")
+
+    @Autowired
+    @Qualifier(value="infEventScheduler")
     private TaskScheduler taskScheduler;
-	
-	@Autowired
+
+    @Autowired
     private EventCronConfig cronConfig;
-	
-	@Autowired
+
+    @Autowired
     private EventTask myTask;
 
-	public void scheduleAllCrons() {
-        cronConfig.initial();
+    public void scheduleAllCrons() {
         cronConfig.getSchedules().forEach(
                 cron -> taskScheduler.schedule(myTask, new CronTrigger(cron))
         );
