@@ -38,7 +38,7 @@ public class EventCronConfig {
         int month = cal.get(Calendar.MONTH) + 1;
         int year = cal.get(Calendar.YEAR);
         int hour = cal.get(Calendar.HOUR) == 0 ? 12 : cal.get(Calendar.HOUR);
-        int minute = cal.get(Calendar.MINUTE);
+        int minute = cal.get(Calendar.MINUTE) - 1;
 
         Calendar currentTime = Calendar.getInstance();
         currentTime.setTime(new Date());
