@@ -47,8 +47,9 @@ public class EventTask implements Runnable {
 
     @Override
     public void run() {
-        List<Event> eventList = eventService.getAllEventFromSystem();
-        for (int index = 0; index < eventList.size(); index++) {
+        System.out.println("The system are running!");
+    	List<Event> eventList = eventService.getAllEventFromSystem();
+    	for (int index = 0; index < eventList.size(); index++) {
             validateTime(eventList.get(index), eventList.get(index).getDate());
         }
     }
