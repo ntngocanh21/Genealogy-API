@@ -168,14 +168,15 @@ public class PeopleServiceImpl implements PeopleService  {
                                         PeopleEntity people1 = centerPeopleOrigin.get(indexCenterPeopleOrigin -1);
                                         PeopleEntity people2 = peopleOriginList.get(indexPeopleOrigin-1);
 
-                                        if (people1.getBirthday().after(people2.getBirthday())) {
-                                            key.setOriginOlder(true);
-                                            break outerloop;
-                                        } else {
-                                            key.setOriginOlder(false);
+                                        if(people1.getBirthday()!= null && people2.getBirthday() !=null){
+                                            if (people1.getBirthday().after(people2.getBirthday())) {
+                                                key.setOriginOlder(true);
+                                                break outerloop;
+                                            } else {
+                                                key.setOriginOlder(false);
 
+                                            }
                                         }
-
                                     }
                                 }
                             }
